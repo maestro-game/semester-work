@@ -1,0 +1,8 @@
+.left-part {
+    float: left;
+    margin-left: 10vmin;
+}
+
+input {
+    display: block;
+}

@@ -1,0 +1,17 @@
+.main-header {
+    text-align: center;
+}
+
+.left-part {
+    float: left;
+    margin-left: 10vmin;
+}
+
+.right-part {
+    float: right;
+    margin-right: 10vmin;
+}
+
+input {
+    display: block;
+}

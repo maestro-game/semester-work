@@ -1,0 +1,12 @@
+.left-part {
+    float: left;
+    width: 40vw;
+    border-left: 20vw;
+    border-right: 5vm;
+}
+
+.right-part {
+    float: left;
+    width: 15vw;
+    border-right: 20vm;
+}
