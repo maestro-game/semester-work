@@ -2,6 +2,10 @@ package repositories;
 
 import models.Comment;
 
-public interface CommentsRepository extends CrudRepository<Comment, Long> {
+import java.util.List;
 
+public interface CommentsRepository extends CrudRepository<Comment, Long> {
+    List<Comment> findAllByAuthorId(String author);
+
+    List<Comment> findAllByPostId(Long id);
 }

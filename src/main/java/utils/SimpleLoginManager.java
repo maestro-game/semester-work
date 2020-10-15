@@ -2,7 +2,6 @@ package utils;
 
 import repositories.UsersRepository;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class SimpleLoginManager implements LoginManager {

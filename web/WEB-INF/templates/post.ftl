@@ -16,7 +16,7 @@
         <div>
             <#if comments??>
                 <#list comments as comment>
-                    <p>-----------</p>
+                    <p>--------------------------------</p>
                     <h4>${comment.from.name} ${comment.from.surname} - ${comment.timestamp}</h4>
                     <h3>${comment.text}</h3>
                 </#list>

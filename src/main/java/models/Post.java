@@ -12,7 +12,6 @@ import java.util.Objects;
 public class Post {
     Long id;
     User author;
-    //TODO fix db and is Image good?
     String image;
     String description;
 

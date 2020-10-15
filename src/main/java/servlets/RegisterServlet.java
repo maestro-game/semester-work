@@ -1,9 +1,8 @@
 package servlets;
 
-import html.HtmlGenerator;
+import html.HtmlManager;
 import html.Page;
 import models.User;
-import utils.LoginManager;
 import utils.RegisterManager;
 
 import javax.servlet.ServletConfig;
@@ -23,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 public class RegisterServlet extends HttpServlet {
-    HtmlGenerator htmlManager;
+    HtmlManager htmlManager;
     RegisterManager registerManager;
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlGenerator) config.getServletContext().getAttribute("htmlManager");
+        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
         registerManager = (RegisterManager) config.getServletContext().getAttribute("registerManager");
     }
 
@@ -55,7 +54,7 @@ public class RegisterServlet extends HttpServlet {
         List<String> warnings = new LinkedList<>();
         try {
             String id = request.getParameter("id");
-            //TODO НОРМАЛЬНО, Б***Ь, ШИФРУЙ!
+            //TODO i should use better hash algorithm
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
             byte[] hash = digest.digest(request.getParameter("password").getBytes(StandardCharsets.UTF_8));
             User user = User.builder().id(id)

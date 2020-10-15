@@ -21,7 +21,7 @@ public class AuthFilter implements Filter {
         if (session != null) {
             String name = (String) session.getAttribute("name");
             if (name != null) {
-                request.setAttribute("userName", name);
+                request.setAttribute("name", name);
             }
         }
 

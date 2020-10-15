@@ -1,10 +1,10 @@
-package servlets;
+package listeners;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import html.HTMLManager;
+import html.HtmlManagerIml;
 import repositories.*;
 import utils.SimpleLoginManager;
 import utils.SimpleRegisterManager;
@@ -15,7 +15,6 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.sql.DataSource;
-import java.util.Properties;
 
 public class ContextListener implements javax.servlet.ServletContextListener {
 
@@ -31,7 +30,6 @@ public class ContextListener implements javax.servlet.ServletContextListener {
             Context envContext = (Context) new InitialContext().lookup("java:comp/env");
             HikariConfig config = new HikariConfig();
             config.setDataSource(((javax.sql.DataSource) envContext.lookup("jdbc/social")));
-            //TODO pool size from cfg
             config.setMaximumPoolSize(20);
             dataSource = new HikariDataSource(config);
         } catch (NamingException e) {
@@ -39,9 +37,9 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         }
         servletContext.setAttribute("dataSource", dataSource);
         UsersRepository usersRepository = new UsersRepositoryJdbcImpl(dataSource);
-        CommentsRepository commentsRepository = null;
-        PostsRepository postsRepository = new PostsRepositoryJdbcImpl(dataSource);
-        servletContext.setAttribute("htmlManager", new HTMLManager(usersRepository, commentsRepository, postsRepository));
+        CommentsRepository commentsRepository = new CommentsRepositoryJdbcImpl(dataSource);
+        PostsRepository postsRepository = new PostsRepositoryJdbcImpl(dataSource, usersRepository);
+        servletContext.setAttribute("htmlManager", new HtmlManagerIml(usersRepository, commentsRepository, postsRepository));
         servletContext.setAttribute("registerManager", new SimpleRegisterManager(usersRepository));
         servletContext.setAttribute("loginManager", new SimpleLoginManager(usersRepository));
     }

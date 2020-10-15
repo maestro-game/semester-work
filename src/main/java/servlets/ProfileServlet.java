@@ -1,6 +1,6 @@
 package servlets;
 
-import html.HtmlGenerator;
+import html.HtmlManager;
 import html.Page;
 import utils.LoginManager;
 import utils.RegisterManager;
@@ -14,13 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileServlet extends HttpServlet {
-    HtmlGenerator htmlManager;
+    HtmlManager htmlManager;
     RegisterManager registerManager;
     LoginManager loginManager;
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlGenerator) config.getServletContext().getAttribute("htmlManager");
+        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
 //        registerManager = new SimpleRegisterManager(dataManager);
 //        loginManager = new SimpleLoginManager(dataManager);
     }

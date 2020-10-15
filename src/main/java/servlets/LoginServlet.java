@@ -1,9 +1,8 @@
 package servlets;
 
-import html.HtmlGenerator;
+import html.HtmlManager;
 import html.Page;
 import utils.LoginManager;
-import utils.RegisterManager;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
@@ -20,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 public class LoginServlet extends HttpServlet {
-    HtmlGenerator htmlManager;
+    HtmlManager htmlManager;
     LoginManager loginManager;
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlGenerator) config.getServletContext().getAttribute("htmlManager");
+        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
         loginManager = (LoginManager) config.getServletContext().getAttribute("loginManager");
     }
 
