@@ -1,15 +1,21 @@
 package filters;
 
+import utils.CookieManager;
+
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class AuthFilter implements Filter {
+    CookieManager cookieManager;
+
     @Override
     public void init(FilterConfig filterConfig) {
-
+        cookieManager = (CookieManager) filterConfig.getServletContext().getAttribute("cookieManager");
     }
 
     @Override

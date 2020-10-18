@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class HtmlManagerIml implements HtmlManager {
+public class HtmlManagerImpl implements HtmlManager {
     UsersRepository usersRepository;
     CommentsRepository commentsRepository;
     PostsRepository postsRepository;
@@ -27,13 +27,13 @@ public class HtmlManagerIml implements HtmlManager {
 
     public void render(Page page, String param, HttpServletRequest request, HttpServletResponse response, Map<String, Object> root) {
         response.setCharacterEncoding("UTF-8");
-        String name = (String) request.getAttribute("name");
-        root.put("logged", name != null);
+        String id = (String) request.getAttribute("id");
+        root.put("logged", id != null);
 
         switch (page) {
             case messages -> {
-                if (name != null) {
-                    Optional<User> candidate = usersRepository.findById(name);
+                if (id != null) {
+                    Optional<User> candidate = usersRepository.findById(id);
                     if (candidate.isEmpty()) {
                         throw new IllegalArgumentException();
                     }
@@ -52,7 +52,7 @@ public class HtmlManagerIml implements HtmlManager {
                 if (candidate.isEmpty()) {
                     page = Page.notFound;
                 } else {
-                    if (param.equals(name)) {
+                    if (param.equals(id)) {
                         root.put("itself", null);
                     }
                     root.put("profile", candidate.get());
@@ -67,6 +67,7 @@ public class HtmlManagerIml implements HtmlManager {
                     Post post = candidate.get();
                     root.put("post", post);
                     root.put("comments", commentsRepository.findAllByPostId(post.getId()));
+                    root.put("likes", 1);
                 }
             }
         }
@@ -78,7 +79,7 @@ public class HtmlManagerIml implements HtmlManager {
         }
     }
 
-    public HtmlManagerIml(UsersRepository usersRepository, CommentsRepository commentsRepository, PostsRepository postsRepository) {
+    public HtmlManagerImpl(UsersRepository usersRepository, CommentsRepository commentsRepository, PostsRepository postsRepository) {
         this.usersRepository = usersRepository;
         this.commentsRepository = commentsRepository;
         this.postsRepository = postsRepository;
