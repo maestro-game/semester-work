@@ -42,6 +42,7 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         servletContext.setAttribute("htmlManager", new HtmlManagerIml(usersRepository, commentsRepository, postsRepository));
         servletContext.setAttribute("registerManager", new SimpleRegisterManager(usersRepository));
         servletContext.setAttribute("loginManager", new SimpleLoginManager(usersRepository));
+        servletContext.setAttribute("commentRepository", commentsRepository);
     }
 
     @Override

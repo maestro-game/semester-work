@@ -44,6 +44,11 @@ public class CookieManagerImpl implements CookieManager {
     }
 
     @Override
+    public void remove(Cookie cookie) {
+        cookieRepository.deleteById(cookie);
+    }
+
+    @Override
     public List<Cookie> getAllByUserId(Object userId) {
         return cookieRepository.findAllByUserId((String) userId);
     }

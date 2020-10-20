@@ -3,10 +3,6 @@ package repositories;
 import models.User;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 
 public class UsersRepositoryJdbcImpl implements UsersRepository {
@@ -17,11 +13,9 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     //language=SQL
     private static final String SQL_SAVE = "INSERT INTO users values (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    DataSource dataSource;
+    JdbcTemplate jdbcTemplate;
 
-    public UsersRepositoryJdbcImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private RowMapper<Boolean> isExistRowMapper = row -> row.getBoolean(1);
 
     private RowMapper<User> userRowMapper = row -> new User(row.getString(1),
             null,
@@ -35,41 +29,26 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
             null,
             null);
 
+    public UsersRepositoryJdbcImpl(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
+    }
+
     @Override
     public Optional<User> findById(String id) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(SQL_SELECT_USER_BY_ID)) {
-                statement.setString(1, id);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return Optional.of(userRowMapper.mapRow(resultSet));
-                    } else {
-                        return Optional.empty();
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return jdbcTemplate.entityQuery(SQL_SELECT_USER_BY_ID, userRowMapper, id);
     }
 
     @Override
     public void save(User entity) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(SQL_SAVE)) {
-                statement.setString(1, entity.getId());
-                statement.setBytes(2, entity.getPassword());
-                statement.setString(3, entity.getName());
-                statement.setString(4, entity.getSurname());
-                statement.setString(5, entity.getMiddleName());
-                statement.setString(6, entity.getEmail());
-                statement.setDate(7, entity.getBirth());
-                statement.setString(8, entity.getAbout());
-                statement.execute();
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
+        jdbcTemplate.executeQuery(SQL_SAVE,
+                entity.getId(),
+                entity.getPassword(),
+                entity.getName(),
+                entity.getSurname(),
+                entity.getMiddleName(),
+                entity.getEmail(),
+                entity.getBirth(),
+                entity.getAbout());
     }
 
     @Override
@@ -84,19 +63,6 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
 
     @Override
     public boolean isExist(String id, byte[] hashPassword) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(SQL_IS_EXIST_BY_ID_AND_PASS)) {
-                statement.setString(1, id);
-                statement.setBytes(2, hashPassword);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return resultSet.getBoolean(1);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return false;
+        return jdbcTemplate.simpleQuery(SQL_IS_EXIST_BY_ID_AND_PASS, isExistRowMapper, id, hashPassword);
     }
 }

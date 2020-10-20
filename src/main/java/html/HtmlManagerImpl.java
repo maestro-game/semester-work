@@ -28,7 +28,7 @@ public class HtmlManagerImpl implements HtmlManager {
     public void render(Page page, String param, HttpServletRequest request, HttpServletResponse response, Map<String, Object> root) {
         response.setCharacterEncoding("UTF-8");
         String id = (String) request.getAttribute("id");
-        root.put("logged", id != null);
+        int state = id != null ? 1 : 0;
 
         switch (page) {
             case messages -> {
@@ -53,7 +53,7 @@ public class HtmlManagerImpl implements HtmlManager {
                     page = Page.notFound;
                 } else {
                     if (param.equals(id)) {
-                        root.put("itself", null);
+                        state = 2;
                     }
                     root.put("profile", candidate.get());
                     root.put("posts", postsRepository.findAllByAuthorId(param));
@@ -67,11 +67,13 @@ public class HtmlManagerImpl implements HtmlManager {
                     Post post = candidate.get();
                     root.put("post", post);
                     root.put("comments", commentsRepository.findAllByPostId(post.getId()));
+                    //TODO likes count
                     root.put("likes", 1);
                 }
             }
         }
 
+        root.put("logged", state);
         try {
             ((Configuration) request.getServletContext().getAttribute("cfg")).getTemplate(page.path).process(root, response.getWriter());
         } catch (IOException | TemplateException e) {

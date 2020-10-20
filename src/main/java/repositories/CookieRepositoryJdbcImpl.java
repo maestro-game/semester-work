@@ -1,46 +1,34 @@
 package repositories;
 
-import lombok.AllArgsConstructor;
-import models.Post;
-
 import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
 public class CookieRepositoryJdbcImpl implements CookieRepository{
-    DataSource dataSource;
+    JdbcTemplate jdbcTemplate;
 
     //language=SQL
     private static String SQL_SAVE = "INSERT INTO cookies values (?, ?)";
     //language=SQL
     private static String SQL_FIND_ALL_BY_USER_ID = "SELECT * FROM cookies WHERE \"user\" = ?";
+    //language=SQL
+    private static String SQL_DELETE = "DELETE FROM cookies WHERE name = ? AND \"user\" = ?";
 
     private static RowMapper<Cookie> cookieRowMapper = row -> new Cookie(row.getString(1), row.getString(2));
 
+    public CookieRepositoryJdbcImpl(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
+    }
+
     @Override
-    public Optional<Cookie> findById(String s) {
+    public Optional<Cookie> findById(Cookie cookie) {
         throw new UnsupportedOperationException("Empty Realisation");
     }
 
     @Override
     public void save(Cookie cookie) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(SQL_SAVE)) {
-                statement.setString(1, cookie.getName());
-                statement.setString(2, cookie.getValue());
-                statement.execute();
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
+        jdbcTemplate.executeQuery(SQL_SAVE, cookie.getName(), cookie.getValue());
     }
 
     @Override
@@ -49,25 +37,12 @@ public class CookieRepositoryJdbcImpl implements CookieRepository{
     }
 
     @Override
-    public void deleteById(String s) {
-        throw new UnsupportedOperationException("Empty Realisation");
+    public void deleteById(Cookie cookie) {
+        jdbcTemplate.executeQuery(SQL_DELETE, cookie.getName(), cookie.getValue());
     }
 
     @Override
     public List<Cookie> findAllByUserId(String userId) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_BY_USER_ID)) {
-                statement.setString(1, userId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    List<Cookie> cookies = new LinkedList<>();
-                    while (resultSet.next()) {
-                        cookies.add(cookieRowMapper.mapRow(resultSet));
-                    }
-                    return cookies;
-                }
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return jdbcTemplate.listQuery(SQL_FIND_ALL_BY_USER_ID, cookieRowMapper, userId);
     }
 }
