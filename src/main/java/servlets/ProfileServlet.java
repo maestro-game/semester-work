@@ -27,11 +27,6 @@ public class ProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.setCharacterEncoding("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
         Map<String, Object> root = new HashMap<>();
         htmlManager.render(Page.profile, request.getRequestURI().substring(4), request, response, root);
     }

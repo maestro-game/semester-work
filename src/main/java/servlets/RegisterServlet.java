@@ -33,22 +33,12 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.setCharacterEncoding("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
         Map<String, Object> root = new HashMap<>();
         htmlManager.render(Page.register, request, response, root);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.setCharacterEncoding("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
         Map<String, Object> root = new HashMap<>();
         Page page = Page.register;
         List<String> warnings = new LinkedList<>();

@@ -2,14 +2,11 @@ package servlets;
 
 import html.HtmlManager;
 import html.Page;
+import utils.CookieManager;
 import utils.LoginManager;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.UnsupportedEncodingException;
+import javax.servlet.http.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -30,29 +27,19 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.setCharacterEncoding("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
         Map<String, Object> root = new HashMap<>();
         htmlManager.render(Page.login, request, response, root);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.setCharacterEncoding("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
         Map<String, Object> root = new HashMap<>();
         List<String> warnings = new LinkedList<>();
         Page page;
         String id = request.getParameter("id");
         MessageDigest digest;
         try {
-            digest = MessageDigest.getInstance("SHA-256");
+            digest = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException();
         }

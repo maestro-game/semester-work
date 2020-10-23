@@ -1,5 +1,6 @@
 package listeners;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import freemarker.template.Configuration;
@@ -37,12 +38,13 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         }
         servletContext.setAttribute("dataSource", dataSource);
         UsersRepository usersRepository = new UsersRepositoryJdbcImpl(dataSource);
-        CommentsRepository commentsRepository = new CommentsRepositoryJdbcImpl(dataSource);
+        CommentsRepository commentsRepository = new CommentsRepositoryJdbcImpl(dataSource, usersRepository);
         PostsRepository postsRepository = new PostsRepositoryJdbcImpl(dataSource, usersRepository);
         servletContext.setAttribute("htmlManager", new HtmlManagerIml(usersRepository, commentsRepository, postsRepository));
         servletContext.setAttribute("registerManager", new SimpleRegisterManager(usersRepository));
         servletContext.setAttribute("loginManager", new SimpleLoginManager(usersRepository));
         servletContext.setAttribute("commentRepository", commentsRepository);
+        servletContext.setAttribute("objectMapper", objectMapper);
     }
 
     @Override

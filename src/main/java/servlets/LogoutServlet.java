@@ -37,6 +37,7 @@ public class LogoutServlet extends HttpServlet {
                     cookieManager.remove(cookie);
                 }
                 cookie.setMaxAge(0);
+                response.addCookie(cookie);
             }
         }
         htmlManager.render(Page.home, request, response, root);
