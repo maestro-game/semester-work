@@ -1,13 +1,16 @@
 package utils;
 
+import lombok.AllArgsConstructor;
 import models.User;
 import repositories.UsersRepository;
 
 import java.sql.SQLException;
 import java.util.List;
 
+@AllArgsConstructor
 public class SimpleRegisterManager implements RegisterManager {
     private UsersRepository usersRepository;
+    private CookieManager cookieManager;
 
     @Override
     public boolean register(User user, List<String> warnings) {
@@ -22,9 +25,5 @@ public class SimpleRegisterManager implements RegisterManager {
             }
         }
         return false;
-    }
-
-    public SimpleRegisterManager(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
     }
 }

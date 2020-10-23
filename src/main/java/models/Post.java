@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Getter
@@ -12,19 +13,7 @@ import java.util.Objects;
 public class Post {
     Long id;
     User author;
+    Timestamp timestamp;
     String image;
     String description;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Post post = (Post) o;
-        return id.equals(post.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

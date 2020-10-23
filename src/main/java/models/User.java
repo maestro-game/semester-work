@@ -18,6 +18,8 @@ public class User {
     String name;
     String surname;
     String middleName;
+    //TODO fix images here and in db
+    String image;
     String email;
     Date birth;
     String about;

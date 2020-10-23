@@ -15,7 +15,8 @@
     </#if>
     <form method="post" action="/login">
         <input type="text" name="id" placeholder="Логин" <#if id??> value=${id} </#if>>
-        <input type="text" name="password" placeholder="Пароль">
+        <input type="password" name="password" placeholder="Пароль">
+        <input type="checkbox" name="remember" placeholder="Запомнить меня" value="true">
         <input type="submit" placeholder="Войти">
     </form>
 </div>

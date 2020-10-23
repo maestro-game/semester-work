@@ -6,10 +6,10 @@ import models.User;
 import utils.RegisterManager;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -44,7 +44,6 @@ public class RegisterServlet extends HttpServlet {
         List<String> warnings = new LinkedList<>();
         try {
             String id = request.getParameter("id");
-            //TODO i should use better hash algorithm
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
             byte[] hash = digest.digest(request.getParameter("password").getBytes(StandardCharsets.UTF_8));
             User user = User.builder().id(id)
@@ -57,7 +56,6 @@ public class RegisterServlet extends HttpServlet {
 
             if (registerManager.register(user, warnings)) {
                 page = Page.login;
-                root.put("id", id);
             } else {
                 root.put("id", id);
                 root.put("name", user.getName());

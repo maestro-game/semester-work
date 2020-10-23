@@ -23,8 +23,9 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
             row.getString(4),
             row.getString(5),
             row.getString(6),
-            row.getDate(7),
-            row.getString(8),
+            row.getString(7),
+            row.getDate(8),
+            row.getString(9),
             null,
             null,
             null);

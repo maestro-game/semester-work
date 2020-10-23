@@ -514,11 +514,11 @@
                                     <div class="post-header-info">
                                         <h5 class="post-author">
                                             <a class="author"
-                                               href="/bronzehair">${post.author.name} ${post.author.surname}</a>
+                                               href="/bronzehair">${profile.name} ${profile.surname}</a>
                                         </h5>
                                         <div class="post-date">
                                             <a class="post-link" href="/wall356173315_24">
-                                                <span class="rel-date">${post.date}</span>
+                                                <span class="rel-date">${post.timestamp}</span>
                                             </a>
                                         </div>
                                         <div class="ui-actions-menu-wrap">
@@ -531,7 +531,7 @@
                                         <div class="wall-text">
                                             <div class="wall-post-cont">
                                                 <div class="wall-post-text">
-                                                    ${post.text}
+                                                    ${post.description}
                                                 </div>
                                             </div>
                                         </div>
@@ -565,4 +565,6 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 </body>

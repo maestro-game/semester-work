@@ -12,7 +12,7 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     //language=SQL
     private static final String SQL_FIND_BY_ID = "SELECT * FROM comments WHERE id = ?";
     //language=SQL
-    private static final String SQL_FIND_BY_POST_ID = "SELECT * FROM comments WHERE post = ?";
+    private static final String SQL_FIND_ALL_BY_POST_ID = "SELECT * FROM comments WHERE post = ?";
     //language=SQL
     private static final String SQL_DELETE_BY_ID = "DELETE FROM comments WHERE id = ?";
     //language=SQL

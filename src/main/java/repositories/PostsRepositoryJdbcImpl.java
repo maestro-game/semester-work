@@ -19,8 +19,16 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
         this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
         this.usersRepository = usersRepository;
     }
-    private final RowMapper<Post> postRowMapper = row -> new Post(row.getLong(1), null, row.getString(3), row.getString(4));
-    private final RowMapper<Post> postWithAuthor = row -> new Post(row.getLong(1), usersRepository.findById(row.getString(2)).get(), row.getString(3), row.getString(4));
+    private final RowMapper<Post> postRowMapper = row -> new Post(row.getLong(1),
+            null,
+            row.getTimestamp(3),
+            row.getString(4),
+            row.getString(5));
+    private final RowMapper<Post> postWithAuthor = row -> new Post(row.getLong(1),
+            usersRepository.findById(row.getString(2)).get(),
+            row.getTimestamp(3),
+            row.getString(4),
+            row.getString(5));
 
     @Override
     public List<Post> findAllByAuthorId(String authorId) {

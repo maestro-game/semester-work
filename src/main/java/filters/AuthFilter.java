@@ -25,9 +25,28 @@ public class AuthFilter implements Filter {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
-            String name = (String) session.getAttribute("name");
-            if (name != null) {
-                request.setAttribute("name", name);
+            String id = (String) session.getAttribute("id");
+            if (id != null) {
+                request.setAttribute("id", id);
+            }
+        } else {
+            HashMap<String, String> hashMap = new HashMap();
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    hashMap.put(cookie.getName(), cookie.getValue());
+                }
+                String id = hashMap.get("id");
+                if (id != null) {
+                    for (Cookie cookie : cookieManager.getAllByUserId(id)) {
+                        hashMap.put(cookie.getName(), cookie.getValue());
+                        if (hashMap.get(cookie.getName()) != null) {
+                            request.setAttribute("id", id);
+                            request.getSession().setAttribute("id", id);
+                            break;
+                        }
+                    }
+                }
             }
         }
 

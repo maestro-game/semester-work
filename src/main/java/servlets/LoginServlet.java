@@ -18,11 +18,13 @@ import java.util.Map;
 public class LoginServlet extends HttpServlet {
     HtmlManager htmlManager;
     LoginManager loginManager;
+    CookieManager cookieManager;
 
     @Override
     public void init(ServletConfig config) {
         htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
         loginManager = (LoginManager) config.getServletContext().getAttribute("loginManager");
+        cookieManager = (CookieManager) config.getServletContext().getAttribute("cookieManager");
     }
 
     @Override
@@ -46,7 +48,15 @@ public class LoginServlet extends HttpServlet {
         byte[] hash = digest.digest(request.getParameter("password").getBytes(StandardCharsets.UTF_8));
         if (loginManager.isExist(id, hash, warnings)) {
             HttpSession session = request.getSession();
-            session.setAttribute("user", id);
+            session.setAttribute("id", id);
+            if (request.getParameter("remember").equals("true")){
+                Cookie cookie = cookieManager.assign(id);
+                cookie.setMaxAge(-1);
+                response.addCookie(cookie);
+                cookie = new Cookie("id", id);
+                cookie.setMaxAge(-1);
+                response.addCookie(cookie);
+            }
             page = Page.profile;
         } else {
             warnings.add("Не верный логин или пароль.");
@@ -54,6 +64,6 @@ public class LoginServlet extends HttpServlet {
             root.put("id", id);
             page = Page.login;
         }
-        htmlManager.render(page, request, response, root);
+        htmlManager.render(page, id, request, response, root);
     }
 }
