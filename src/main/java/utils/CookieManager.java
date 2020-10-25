@@ -8,5 +8,5 @@ public interface CookieManager {
 
     void remove(Cookie cookie);
 
-    List<Cookie> getAllByUserId(Object userId);
+    List<String> getAllByUserId(Object userId);
 }

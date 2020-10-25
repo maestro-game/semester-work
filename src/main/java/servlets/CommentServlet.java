@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 public class CommentServlet extends HttpServlet {
     HtmlManager htmlManager;
@@ -30,7 +31,7 @@ public class CommentServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         String id = (String) request.getAttribute("id");
         if (id != null) {
@@ -40,17 +41,13 @@ public class CommentServlet extends HttpServlet {
                     User.builder().id(id).build(),
                     timestamp,
                     Post.builder().id(Long.valueOf(request.getParameter("post"))).build(),
-                    answers != null ? Comment.builder().id(Long.valueOf(request.getParameter("answers"))).build() : null,
+                    answers != null ? Comment.builder().id(Long.valueOf(answers)).build() : null,
                     request.getParameter("text")));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM в HH:mm:ss");
+            response.getWriter().write(dateFormat.format(timestamp));
             response.setStatus(200);
-            try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM в HH:mm:ss");
-                response.getWriter().write(dateFormat.format(timestamp));
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
         } else {
-            response.setStatus(400);
+            response.sendRedirect("/login");
         }
     }
 
@@ -58,14 +55,49 @@ public class CommentServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = (String) request.getAttribute("id");
         if (id != null) {
+            Long commentId = Long.valueOf(request.getParameter("id"));
+            Optional<Comment> candidate;
             try {
-                commentsRepository.deleteById(Long.valueOf(request.getParameter("id")));
-                //TODO return true to user
+                candidate = commentsRepository.findById(commentId);
+                if (candidate.isPresent() && candidate.get().getAuthor().getId().equals(id)) {
+                    try {
+                        commentsRepository.deleteById(commentId);
+                    } catch (IllegalArgumentException e) {
+                        if (e.getCause().getClass() != SQLException.class) {
+                            throw e;
+                        }
+                    }
+                    response.setStatus(200);
+                }
             } catch (IllegalArgumentException e) {
-                if (e.getCause().getClass() == SQLException.class) {
-                    //TODO return false
+                if (e.getCause().getClass() != SQLException.class) {
+                    throw e;
+                } else {
+                    response.setStatus(400);
                 }
             }
+        } else {
+            response.sendRedirect("/login");
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws
+            ServletException, IOException {
+        String id = (String) request.getAttribute("id");
+        if (id != null) {
+            try {
+                commentsRepository.updateText(Long.valueOf(request.getParameter("id")), request.getParameter("text"));
+                response.setStatus(200);
+            } catch (IllegalArgumentException e) {
+                if (e.getCause().getClass() != SQLException.class) {
+                    throw e;
+                } else {
+                    response.setStatus(400);
+                }
+            }
+        } else {
+            response.sendRedirect("/login");
         }
     }
 }

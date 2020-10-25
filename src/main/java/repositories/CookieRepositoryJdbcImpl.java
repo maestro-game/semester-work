@@ -11,11 +11,11 @@ public class CookieRepositoryJdbcImpl implements CookieRepository{
     //language=SQL
     private static String SQL_SAVE = "INSERT INTO cookies values (?, ?)";
     //language=SQL
-    private static String SQL_FIND_ALL_BY_USER_ID = "SELECT * FROM cookies WHERE \"user\" = ?";
+    private static String SQL_FIND_ALL_NAMES_BY_USER_ID = "SELECT name FROM cookies WHERE \"user\" = ?";
     //language=SQL
     private static String SQL_DELETE = "DELETE FROM cookies WHERE name = ? AND \"user\" = ?";
 
-    private static RowMapper<Cookie> cookieRowMapper = row -> new Cookie(row.getString(1), row.getString(2));
+    private static RowMapper<String> nameRowMapper = row -> row.getString(1);
 
     public CookieRepositoryJdbcImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
@@ -42,7 +42,7 @@ public class CookieRepositoryJdbcImpl implements CookieRepository{
     }
 
     @Override
-    public List<Cookie> findAllByUserId(String userId) {
-        return jdbcTemplate.listQuery(SQL_FIND_ALL_BY_USER_ID, cookieRowMapper, userId);
+    public List<String> findAllByUserId(String userId) {
+        return jdbcTemplate.listQuery(SQL_FIND_ALL_NAMES_BY_USER_ID, nameRowMapper, userId);
     }
 }

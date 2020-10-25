@@ -12,11 +12,13 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     //language=SQL
     private static final String SQL_FIND_BY_ID = "SELECT * FROM comments WHERE id = ?";
     //language=SQL
-    private static final String SQL_FIND_ALL_BY_POST_ID = "SELECT * FROM comments WHERE post = ?";
+    private static final String SQL_FIND_ALL_BY_POST_ID = "SELECT * FROM comments WHERE post = ? ORDER BY answers is not null, timestamp";
     //language=SQL
     private static final String SQL_DELETE_BY_ID = "DELETE FROM comments WHERE id = ?";
     //language=SQL
     private static final String SQL_SAFE = "INSERT INTO comments values (default, ?, ?, ?, ?, ?)";
+    //language=SQL
+    private static final String SQL_UPDATE_TEXT = "UPDATE comments SET text = ? WHERE id = ?";
 
     JdbcTemplate jdbcTemplate;
     UsersRepository usersRepository;
@@ -31,7 +33,7 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
             usersRepository.findById(row.getString(2)).get(),
             row.getTimestamp(3),
             null,
-            null,
+            findById(row.getLong(5)).orElse(null),
             row.getString(6));
 
     public CommentsRepositoryJdbcImpl(DataSource dataSource, UsersRepository usersRepository) {
@@ -50,8 +52,8 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     }
 
     @Override
-    public Optional<Comment> findById(Long aLong) {
-        throw new UnsupportedOperationException("Empty Realisation");
+    public Optional<Comment> findById(Long id) {
+        return jdbcTemplate.entityQuery(SQL_FIND_BY_ID, commentWithAuthor, id);
     }
 
     @Override
@@ -67,6 +69,11 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     @Override
     public void update(Comment entity) {
         throw new UnsupportedOperationException("Empty Realisation");
+    }
+
+    @Override
+    public void updateText(Long id, String text) {
+        jdbcTemplate.executeQuery(SQL_UPDATE_TEXT, text, id);
     }
 
     @Override

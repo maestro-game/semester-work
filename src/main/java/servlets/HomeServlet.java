@@ -28,14 +28,15 @@ public class HomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
         Page page = Page.home;
-        String param = (String) request.getAttribute("name");
+        String param = (String) request.getAttribute("id");
 
-        if (!request.getRequestURI().equals("/")){
+        if (!request.getRequestURI().equals("/")) {
             page = Page.notFound;
+        } else {
+            if (param != null) {
+                page = Page.profile;
+            }
         }
-        if (param != null) {
-            page = Page.profile;
-        }
-        htmlManager.render(page,  request, response, root);
+        htmlManager.render(page, param, request, response, root);
     }
 }

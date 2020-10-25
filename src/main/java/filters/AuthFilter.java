@@ -20,6 +20,8 @@ public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        servletRequest.setCharacterEncoding("UTF-8");
+        servletResponse.setCharacterEncoding("UTF-8");
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
@@ -38,9 +40,8 @@ public class AuthFilter implements Filter {
                 }
                 String id = hashMap.get("id");
                 if (id != null) {
-                    for (Cookie cookie : cookieManager.getAllByUserId(id)) {
-                        hashMap.put(cookie.getName(), cookie.getValue());
-                        if (hashMap.get(cookie.getName()) != null) {
+                    for (String cookie : cookieManager.getAllByUserId(id)) {
+                        if (hashMap.get(cookie) != null) {
                             request.setAttribute("id", id);
                             request.getSession().setAttribute("id", id);
                             break;

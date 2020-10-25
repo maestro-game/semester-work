@@ -7,6 +7,7 @@ import utils.LoginManager;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LoginServlet extends HttpServlet {
     HtmlManager htmlManager;
@@ -30,12 +32,22 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        htmlManager.render(Page.login, request, response, root);
+        Page page = Page.login;
+        String param = (String) request.getAttribute("id");
+        if (param != null) {
+            page = Page.profile;
+        }
+        htmlManager.render(page, param, request, response, root);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
+        String param = (String) request.getAttribute("id");
+        if (param != null) {
+            htmlManager.render(Page.profile, param, request, response, root);
+            return;
+        }
         List<String> warnings = new LinkedList<>();
         Page page;
         String id = request.getParameter("id");
@@ -49,7 +61,7 @@ public class LoginServlet extends HttpServlet {
         if (loginManager.isExist(id, hash, warnings)) {
             HttpSession session = request.getSession();
             session.setAttribute("id", id);
-            if (request.getParameter("remember").equals("true")){
+            if ("true".equals(request.getParameter("remember"))){
                 Cookie cookie = cookieManager.assign(id);
                 cookie.setMaxAge(-1);
                 response.addCookie(cookie);

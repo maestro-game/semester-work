@@ -4,5 +4,5 @@ import javax.servlet.http.Cookie;
 import java.util.List;
 
 public interface CookieRepository extends CrudRepository<Cookie, Cookie> {
-    List<Cookie> findAllByUserId(String id);
+    List<String> findAllByUserId(String id);
 }

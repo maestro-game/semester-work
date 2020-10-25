@@ -49,7 +49,7 @@ public class CookieManagerImpl implements CookieManager {
     }
 
     @Override
-    public List<Cookie> getAllByUserId(Object userId) {
+    public List<String> getAllByUserId(Object userId) {
         return cookieRepository.findAllByUserId((String) userId);
     }
 }
