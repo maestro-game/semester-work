@@ -1,4 +1,4 @@
-package utils;
+package managers;
 
 import javax.servlet.http.Cookie;
 import java.util.List;

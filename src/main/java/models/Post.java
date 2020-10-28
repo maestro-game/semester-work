@@ -11,9 +11,9 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 public class Post {
-    Long id;
-    User author;
-    Timestamp timestamp;
-    String image;
-    String description;
+    private Long id;
+    private User author;
+    private Timestamp timestamp;
+    private String image;
+    private String description;
 }

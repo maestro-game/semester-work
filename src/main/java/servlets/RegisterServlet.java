@@ -1,18 +1,16 @@
 package servlets;
 
-import html.HtmlManager;
-import html.Page;
+import managers.HtmlManager;
+import managers.Page;
 import models.User;
-import utils.RegisterManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import managers.RegisterManager;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.http.Cookie;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,11 +22,14 @@ import java.util.Map;
 public class RegisterServlet extends HttpServlet {
     HtmlManager htmlManager;
     RegisterManager registerManager;
+    PasswordEncoder passwordEncoder;
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
-        registerManager = (RegisterManager) config.getServletContext().getAttribute("registerManager");
+        ServletContext context = config.getServletContext();
+        htmlManager = (HtmlManager) context.getAttribute("htmlManager");
+        registerManager = (RegisterManager) context.getAttribute("registerManager");
+        passwordEncoder = (PasswordEncoder) context.getAttribute("passwordEncoder");
     }
 
     @Override
@@ -44,10 +45,8 @@ public class RegisterServlet extends HttpServlet {
         List<String> warnings = new LinkedList<>();
         try {
             String id = request.getParameter("id");
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            byte[] hash = digest.digest(request.getParameter("password").getBytes(StandardCharsets.UTF_8));
             User user = User.builder().id(id)
-                    .password(hash)
+                    .password(passwordEncoder.encode(request.getParameter("password")))
                     .name(request.getParameter("name"))
                     .surname(request.getParameter("surname"))
                     .email(request.getParameter("email"))
@@ -67,8 +66,6 @@ public class RegisterServlet extends HttpServlet {
         } catch (ParseException e) {
             warnings.add("Неверный формат даты (yyyy-MM-dd))");
             root.put("warnings", warnings);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException(e);
         }
         htmlManager.render(page, request, response, root);
     }

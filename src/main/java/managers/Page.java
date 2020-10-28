@@ -1,4 +1,4 @@
-package html;
+package managers;
 
 public enum Page {
     home("home.ftl"),

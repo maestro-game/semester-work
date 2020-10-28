@@ -1,13 +1,14 @@
 package servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import html.HtmlManager;
+import managers.HtmlManager;
 import models.Comment;
 import models.Post;
 import models.User;
 import repositories.CommentsRepository;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,49 +26,60 @@ public class CommentServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
-        commentsRepository = (CommentsRepository) config.getServletContext().getAttribute("commentRepository");
-        objectMapper = (ObjectMapper) config.getServletContext().getAttribute("objectMapper");
+        ServletContext context = config.getServletContext();
+        htmlManager = (HtmlManager) context.getAttribute("htmlManager");
+        commentsRepository = (CommentsRepository) context.getAttribute("commentRepository");
+        objectMapper = (ObjectMapper) context.getAttribute("objectMapper");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
-        String id = (String) request.getAttribute("id");
-        if (id != null) {
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
             String answers = request.getParameter("answers");
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            commentsRepository.save(new Comment(null,
-                    User.builder().id(id).build(),
-                    timestamp,
-                    Post.builder().id(Long.valueOf(request.getParameter("post"))).build(),
-                    answers != null ? Comment.builder().id(Long.valueOf(answers)).build() : null,
-                    request.getParameter("text")));
+            try {
+                commentsRepository.save(new Comment(null,
+                        user,
+                        timestamp,
+                        Post.builder().id(Long.valueOf(request.getParameter("post"))).build(),
+                        answers != null ? Comment.builder().id(Long.valueOf(answers)).build() : null,
+                        request.getParameter("text")));
+            } catch (IllegalArgumentException e) {
+                if (e.getCause().getClass() != SQLException.class) {
+                    throw e;
+                }
+                response.setStatus(400);
+            }
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM в HH:mm:ss");
+            //TODO add timestamp and user to response
             response.getWriter().write(dateFormat.format(timestamp));
             response.setStatus(200);
         } else {
-            response.sendRedirect("/login");
+            //TODO redirect
+            response.setStatus(400);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = (String) request.getAttribute("id");
-        if (id != null) {
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
             Long commentId = Long.valueOf(request.getParameter("id"));
             Optional<Comment> candidate;
             try {
                 candidate = commentsRepository.findById(commentId);
-                if (candidate.isPresent() && candidate.get().getAuthor().getId().equals(id)) {
+                if (candidate.isPresent() && candidate.get().getAuthor().getId().equals(user.getId())) {
                     try {
                         commentsRepository.deleteById(commentId);
+                        response.setStatus(200);
                     } catch (IllegalArgumentException e) {
                         if (e.getCause().getClass() != SQLException.class) {
                             throw e;
                         }
+                        response.setStatus(400);
                     }
-                    response.setStatus(200);
                 }
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
@@ -77,27 +89,27 @@ public class CommentServlet extends HttpServlet {
                 }
             }
         } else {
-            response.sendRedirect("/login");
+            //TODO redirect
+            response.setStatus(400);
         }
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws
-            ServletException, IOException {
-        String id = (String) request.getAttribute("id");
-        if (id != null) {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
             try {
                 commentsRepository.updateText(Long.valueOf(request.getParameter("id")), request.getParameter("text"));
                 response.setStatus(200);
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
                     throw e;
-                } else {
-                    response.setStatus(400);
                 }
+                response.setStatus(400);
             }
         } else {
-            response.sendRedirect("/login");
+            //TODO redirect
+            response.setStatus(400);
         }
     }
 }

@@ -1,66 +1,64 @@
 package servlets;
 
-import html.HtmlManager;
-import html.Page;
-import utils.CookieManager;
-import utils.LoginManager;
+import managers.HtmlManager;
+import managers.Page;
+import models.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import managers.CookieManager;
+import managers.LoginManager;
+import repositories.UsersRepository;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.*;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class LoginServlet extends HttpServlet {
     HtmlManager htmlManager;
     LoginManager loginManager;
     CookieManager cookieManager;
+    PasswordEncoder passwordEncoder;
+    UsersRepository usersRepository;
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
-        loginManager = (LoginManager) config.getServletContext().getAttribute("loginManager");
-        cookieManager = (CookieManager) config.getServletContext().getAttribute("cookieManager");
+        ServletContext context = config.getServletContext();
+        htmlManager = (HtmlManager) context.getAttribute("htmlManager");
+        loginManager = (LoginManager) context.getAttribute("loginManager");
+        cookieManager = (CookieManager) context.getAttribute("cookieManager");
+        passwordEncoder = (PasswordEncoder) context.getAttribute("passwordEncoder");
+        usersRepository = (UsersRepository) context.getAttribute("usersRepository");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
         Page page = Page.login;
-        String param = (String) request.getAttribute("id");
-        if (param != null) {
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
             page = Page.profile;
         }
-        htmlManager.render(page, param, request, response, root);
+        htmlManager.render(page, user != null ? user.getId() : null, request, response, root);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        String param = (String) request.getAttribute("id");
-        if (param != null) {
-            htmlManager.render(Page.profile, param, request, response, root);
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
+            htmlManager.render(Page.profile, user.getId(), request, response, root);
             return;
         }
         List<String> warnings = new LinkedList<>();
         Page page;
         String id = request.getParameter("id");
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalArgumentException();
-        }
-        byte[] hash = digest.digest(request.getParameter("password").getBytes(StandardCharsets.UTF_8));
-        if (loginManager.isExist(id, hash, warnings)) {
+        if (loginManager.isExist(id, request.getParameter("password"), warnings)) {
             HttpSession session = request.getSession();
-            session.setAttribute("id", id);
+            User user1 = usersRepository.findById(id).get();
+            session.setAttribute("user", user1);
             if ("true".equals(request.getParameter("remember"))){
                 Cookie cookie = cookieManager.assign(id);
                 cookie.setMaxAge(-1);

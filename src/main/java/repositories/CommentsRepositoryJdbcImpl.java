@@ -1,11 +1,12 @@
 package repositories;
 
+import lombok.AllArgsConstructor;
 import models.Comment;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     //language=SQL
     private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT * FROM comments WHERE author = ?";
@@ -20,7 +21,7 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     //language=SQL
     private static final String SQL_UPDATE_TEXT = "UPDATE comments SET text = ? WHERE id = ?";
 
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     UsersRepository usersRepository;
 
     private final RowMapper<Comment> commentRowMapper = row -> new Comment(row.getLong(1),
@@ -35,11 +36,6 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
             null,
             findById(row.getLong(5)).orElse(null),
             row.getString(6));
-
-    public CommentsRepositoryJdbcImpl(DataSource dataSource, UsersRepository usersRepository) {
-        this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
-        this.usersRepository = usersRepository;
-    }
 
     @Override
     public List<Comment> findAllByAuthorId(String authorId) {

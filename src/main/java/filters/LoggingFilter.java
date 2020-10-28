@@ -1,5 +1,6 @@
 package filters;
 
+import models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +20,9 @@ public class LoggingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String id = (String) servletRequest.getAttribute("id");
+        User user = (User) servletRequest.getAttribute("user");
         StringBuilder builder = new StringBuilder();
-        builder.append(id != null ? "authorized user '" + id + "'" : "unauthorized user" );
+        builder.append(user != null ? "authorized user '" + user.getId() + "'" : "unauthorized user" );
         builder.append(" | request on ").append(request.getRequestURI());
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

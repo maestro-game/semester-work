@@ -1,12 +1,15 @@
 package repositories;
 
+import lombok.AllArgsConstructor;
+
 import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class CookieRepositoryJdbcImpl implements CookieRepository{
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     //language=SQL
     private static String SQL_SAVE = "INSERT INTO cookies values (?, ?)";
@@ -16,10 +19,6 @@ public class CookieRepositoryJdbcImpl implements CookieRepository{
     private static String SQL_DELETE = "DELETE FROM cookies WHERE name = ? AND \"user\" = ?";
 
     private static RowMapper<String> nameRowMapper = row -> row.getString(1);
-
-    public CookieRepositoryJdbcImpl(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
-    }
 
     @Override
     public Optional<Cookie> findById(Cookie cookie) {

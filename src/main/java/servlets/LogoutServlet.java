@@ -1,10 +1,12 @@
 package servlets;
 
-import html.HtmlManager;
-import html.Page;
-import utils.CookieManager;
+import managers.HtmlManager;
+import managers.Page;
+import managers.CookieManager;
+import models.User;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,22 +18,23 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
-        cookieManager = (CookieManager) config.getServletContext().getAttribute("cookieManager");
+        ServletContext context = config.getServletContext();
+        htmlManager = (HtmlManager) context.getAttribute("htmlManager");
+        cookieManager = (CookieManager) context.getAttribute("cookieManager");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        String id = (String) request.getAttribute("id");
-        if (id != null) {
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
 
-            HashSet<String> hashSet = new HashSet<>(cookieManager.getAllByUserId(id));
+            HashSet<String> hashSet = new HashSet<>(cookieManager.getAllByUserId(user.getId()));
             for (Cookie cookie : request.getCookies()) {
                 cookie.setMaxAge(0);
                 response.addCookie(cookie);
                 if (hashSet.contains(cookie.getName())) {
-                    cookie.setValue(id);
+                    cookie.setValue(user.getId());
                     cookieManager.remove(cookie);
                 }
             }

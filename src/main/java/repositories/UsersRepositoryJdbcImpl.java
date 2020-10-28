@@ -1,38 +1,33 @@
 package repositories;
 
+import lombok.AllArgsConstructor;
 import models.User;
 
 import javax.sql.DataSource;
+import java.nio.file.Path;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class UsersRepositoryJdbcImpl implements UsersRepository {
     //language=SQL
     private static final String SQL_SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     //language=SQL
-    private static final String SQL_IS_EXIST_BY_ID_AND_PASS = "SELECT exists(SELECT 1 FROM users WHERE id = ? AND password = ?)";
-    //language=SQL
     private static final String SQL_SAVE = "INSERT INTO users values (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    private RowMapper<Boolean> isExistRowMapper = row -> row.getBoolean(1);
-
-    private RowMapper<User> userRowMapper = row -> new User(row.getString(1),
+    private static RowMapper<User> userRowMapper = row -> new User(row.getString(1),
             null,
             row.getString(3),
             row.getString(4),
             row.getString(5),
-            row.getString(6),
+            Path.of(row.getString(6)),
             row.getString(7),
             row.getDate(8),
             row.getString(9),
             null,
             null,
             null);
-
-    public UsersRepositoryJdbcImpl(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
-    }
 
     @Override
     public Optional<User> findById(String id) {
@@ -60,10 +55,5 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     @Override
     public void deleteById(String s) {
         throw new UnsupportedOperationException("Empty Realisation");
-    }
-
-    @Override
-    public boolean isExist(String id, byte[] hashPassword) {
-        return jdbcTemplate.simpleQuery(SQL_IS_EXIST_BY_ID_AND_PASS, isExistRowMapper, id, hashPassword);
     }
 }

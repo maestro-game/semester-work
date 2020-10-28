@@ -10,10 +10,10 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 public class Comment {
-    Long id;
-    User author;
-    Timestamp timestamp;
-    Post post;
-    Comment answerTo;
-    String text;
+    private Long id;
+    private User author;
+    private Timestamp timestamp;
+    private Post post;
+    private Comment answerTo;
+    private String text;
 }

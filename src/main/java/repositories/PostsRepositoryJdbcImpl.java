@@ -1,24 +1,23 @@
 package repositories;
 
+import lombok.AllArgsConstructor;
 import models.Post;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 public class PostsRepositoryJdbcImpl implements PostsRepository {
     //language=SQL
     private static final String SQL_SELECT_BY_AUTHOR_ID = "SELECT * FROM posts WHERE author = ?";
     //language=SQL
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM posts WHERE id = ?";
+    //language=SQL
+    private static final String SQL_UPDATE_TEXT = "UPDATE posts SET description = ? WHERE id = ?";
 
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     UsersRepository usersRepository;
 
-    public PostsRepositoryJdbcImpl(DataSource dataSource, UsersRepository usersRepository) {
-        this.jdbcTemplate = new JdbcTemplateImpl(dataSource);
-        this.usersRepository = usersRepository;
-    }
     private final RowMapper<Post> postRowMapper = row -> new Post(row.getLong(1),
             null,
             row.getTimestamp(3),
@@ -33,6 +32,11 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
     @Override
     public List<Post> findAllByAuthorId(String authorId) {
         return jdbcTemplate.listQuery(SQL_SELECT_BY_AUTHOR_ID, postRowMapper, authorId);
+    }
+
+    @Override
+    public void updateDescription(Long id, String text) {
+        jdbcTemplate.executeQuery(SQL_UPDATE_TEXT, id, text);
     }
 
     @Override

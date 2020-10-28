@@ -3,9 +3,9 @@ package models;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public class Category {
-    private Long id;
-    private String name;
+@Getter
+public class Like {
+    private User user;
+    private Post post;
 }

@@ -1,6 +1,8 @@
 package filters;
 
-import utils.CookieManager;
+import managers.CookieManager;
+import models.User;
+import repositories.UsersRepository;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -12,10 +14,12 @@ import java.util.HashMap;
 
 public class AuthFilter implements Filter {
     CookieManager cookieManager;
+    UsersRepository usersRepository;
 
     @Override
     public void init(FilterConfig filterConfig) {
-        cookieManager = (CookieManager) filterConfig.getServletContext().getAttribute("cookieManager");
+        ServletContext context = filterConfig.getServletContext();
+        cookieManager = (CookieManager) context.getAttribute("cookieManager");
     }
 
     @Override
@@ -27,9 +31,9 @@ public class AuthFilter implements Filter {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
-            String id = (String) session.getAttribute("id");
-            if (id != null) {
-                request.setAttribute("id", id);
+            User user = (User) session.getAttribute("user");
+            if (user != null) {
+                request.setAttribute("user", user);
             }
         } else {
             HashMap<String, String> hashMap = new HashMap();
@@ -42,8 +46,9 @@ public class AuthFilter implements Filter {
                 if (id != null) {
                     for (String cookie : cookieManager.getAllByUserId(id)) {
                         if (hashMap.get(cookie) != null) {
-                            request.setAttribute("id", id);
-                            request.getSession().setAttribute("id", id);
+                            User user = usersRepository.findById(id).get();
+                            request.setAttribute("user", user);
+                            request.getSession().setAttribute("user", user);
                             break;
                         }
                     }

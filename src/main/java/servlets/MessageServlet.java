@@ -1,9 +1,10 @@
 package servlets;
 
-import html.HtmlManager;
-import html.Page;
+import managers.HtmlManager;
+import managers.Page;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,8 @@ public class MessageServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) {
-        htmlManager = (HtmlManager) config.getServletContext().getAttribute("htmlManager");
+        ServletContext context = config.getServletContext();
+        htmlManager = (HtmlManager) context.getAttribute("htmlManager");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package utils;
+package managers;
 
 import lombok.AllArgsConstructor;
 import repositories.CookieRepository;
