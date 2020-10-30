@@ -1,7 +1,5 @@
 package managers;
 
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
 import lombok.AllArgsConstructor;
 import models.Post;
 import models.User;
@@ -10,9 +8,6 @@ import repositories.LikesRepository;
 import repositories.PostsRepository;
 import repositories.UsersRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,18 +18,16 @@ public class HtmlManagerImpl implements HtmlManager {
     PostsRepository postsRepository;
     LikesRepository likesRepository;
 
-    public void render(Page page, HttpServletRequest request, HttpServletResponse response, Map<String, Object> root) {
-        render(page, null, request, response, root);
+    public Page render(Page page, User user, Map<String, Object> root) {
+        return render(page, user, null, root);
     }
 
-    public void render(Page page, String param, HttpServletRequest request, HttpServletResponse response, Map<String, Object> root) {
-        response.setCharacterEncoding("UTF-8");
-        User user = (User) request.getAttribute("user");
-        root.put("user", user);
-
+    public Page render(Page page, User user, String param, Map<String, Object> root) {
         switch (page) {
-            case messages -> {
-                //TODO
+            case login, register, home -> {
+                if (user != null) {
+                    return render(Page.profile, user, user.getId(), root);
+                }
             }
             case profile -> {
                 if (user.getId().equals(param)) {
@@ -69,11 +62,7 @@ public class HtmlManagerImpl implements HtmlManager {
                 }
             }
         }
-
-        try {
-            ((Configuration) request.getServletContext().getAttribute("cfg")).getTemplate(page.path).process(root, response.getWriter());
-        } catch (IOException | TemplateException e) {
-            throw new IllegalStateException(e);
-        }
+        root.put("user", user);
+        return page;
     }
 }

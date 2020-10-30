@@ -2,6 +2,7 @@ package servlets;
 
 import managers.HtmlManager;
 import managers.Page;
+import managers.TemplateManager;
 import models.Post;
 import models.User;
 import repositories.PostsRepository;
@@ -20,18 +21,21 @@ import java.util.Optional;
 public class PostServlet extends HttpServlet {
     HtmlManager htmlManager;
     PostsRepository postsRepository;
+    TemplateManager templateManager;
 
     @Override
     public void init(ServletConfig config) {
         ServletContext context = config.getServletContext();
         htmlManager = (HtmlManager) context.getAttribute("htmlManager");
         postsRepository = (PostsRepository) context.getAttribute("postsRepository");
+        templateManager = (TemplateManager) context.getAttribute("templateManager");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        htmlManager.render(Page.post, request.getRequestURI().substring(6), request, response, root);
+        User user = (User) request.getServletContext().getAttribute("user");
+        templateManager.write(htmlManager.render(Page.post, user, request.getRequestURI().substring(6), root), request, response, root);
     }
 
     @Override

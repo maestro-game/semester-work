@@ -5,14 +5,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import managers.HtmlManagerImpl;
+import managers.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import repositories.*;
-import managers.CookieManager;
-import managers.CookieManagerImpl;
-import managers.SimpleLoginManager;
-import managers.SimpleRegisterManager;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -55,10 +51,11 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         servletContext.setAttribute("cookieManager", cookieManager);
+        servletContext.setAttribute("templateManager", new TemplateManagerImpl());
         servletContext.setAttribute("jdbcTemplate", jdbcTemplate);
         servletContext.setAttribute("htmlManager", new HtmlManagerImpl(usersRepository, commentsRepository, postsRepository, likesRepository));
-        servletContext.setAttribute("registerManager", new SimpleRegisterManager(usersRepository, cookieManager));
-        servletContext.setAttribute("loginManager", new SimpleLoginManager(usersRepository, passwordEncoder));
+        servletContext.setAttribute("registerManager", new RegisterManagerImpl(usersRepository, cookieManager));
+        servletContext.setAttribute("loginManager", new LoginManagerImpl(usersRepository, passwordEncoder));
         servletContext.setAttribute("commentRepository", commentsRepository);
         servletContext.setAttribute("objectMapper", new ObjectMapper());
         servletContext.setAttribute("passwordEncoder", passwordEncoder);

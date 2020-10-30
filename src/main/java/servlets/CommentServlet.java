@@ -34,7 +34,6 @@ public class CommentServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setCharacterEncoding("UTF-8");
         User user = (User) request.getAttribute("user");
         if (user != null) {
             String answers = request.getParameter("answers");
@@ -54,7 +53,6 @@ public class CommentServlet extends HttpServlet {
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM в HH:mm:ss");
             //TODO add timestamp and user to response
-            response.getWriter().write(dateFormat.format(timestamp));
             response.setStatus(200);
         } else {
             //TODO redirect

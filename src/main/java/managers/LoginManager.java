@@ -1,7 +1,9 @@
 package managers;
 
+import models.User;
+
 import java.util.List;
 
 public interface LoginManager {
-    boolean isExist(String id, String password, List<String> warnings);
+    User login(String id, String password, List<String> warnings);
 }

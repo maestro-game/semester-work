@@ -1,9 +1,6 @@
 package servlets;
 
-import managers.HtmlManager;
-import managers.Page;
-import managers.LoginManager;
-import managers.RegisterManager;
+import managers.*;
 import models.User;
 
 import javax.servlet.ServletConfig;
@@ -16,26 +13,26 @@ import java.util.Map;
 
 public class HomeServlet extends HttpServlet {
     HtmlManager htmlManager;
+    TemplateManager templateManager;
 
     @Override
     public void init(ServletConfig config) {
         ServletContext context = config.getServletContext();
         htmlManager = (HtmlManager) context.getAttribute("htmlManager");
+        templateManager = (TemplateManager) context.getAttribute("templateManager");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        Page page = Page.home;
+        Page page;
         User user = (User) request.getAttribute("user");
 
         if (!request.getRequestURI().equals("/")) {
             page = Page.notFound;
         } else {
-            if (user != null) {
-                page = Page.profile;
-            }
+            page = Page.home;
         }
-        htmlManager.render(page, user != null ? user.getId() : null, request, response, root);
+        templateManager.write(htmlManager.render(page, user, user != null ? user.getId() : null, root), request, response, root);
     }
 }

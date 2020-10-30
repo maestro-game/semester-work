@@ -1,11 +1,8 @@
 package servlets;
 
-import managers.HtmlManager;
-import managers.Page;
+import managers.*;
 import models.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import managers.CookieManager;
-import managers.LoginManager;
 import repositories.UsersRepository;
 
 import javax.servlet.ServletConfig;
@@ -22,6 +19,7 @@ public class LoginServlet extends HttpServlet {
     CookieManager cookieManager;
     PasswordEncoder passwordEncoder;
     UsersRepository usersRepository;
+    TemplateManager templateManager;
 
     @Override
     public void init(ServletConfig config) {
@@ -31,49 +29,43 @@ public class LoginServlet extends HttpServlet {
         cookieManager = (CookieManager) context.getAttribute("cookieManager");
         passwordEncoder = (PasswordEncoder) context.getAttribute("passwordEncoder");
         usersRepository = (UsersRepository) context.getAttribute("usersRepository");
+        templateManager = (TemplateManager) context.getAttribute("templateManager");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        Page page = Page.login;
         User user = (User) request.getAttribute("user");
-        if (user != null) {
-            page = Page.profile;
-        }
-        htmlManager.render(page, user != null ? user.getId() : null, request, response, root);
+        templateManager.write(htmlManager.render(Page.login, user, user != null ? user.getId() : null, root), request, response, root);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
         User user = (User) request.getAttribute("user");
-        if (user != null) {
-            htmlManager.render(Page.profile, user.getId(), request, response, root);
-            return;
-        }
-        List<String> warnings = new LinkedList<>();
-        Page page;
-        String id = request.getParameter("id");
-        if (loginManager.isExist(id, request.getParameter("password"), warnings)) {
-            HttpSession session = request.getSession();
-            User user1 = usersRepository.findById(id).get();
-            session.setAttribute("user", user1);
-            if ("true".equals(request.getParameter("remember"))){
-                Cookie cookie = cookieManager.assign(id);
-                cookie.setMaxAge(-1);
-                response.addCookie(cookie);
-                cookie = new Cookie("id", id);
-                cookie.setMaxAge(-1);
-                response.addCookie(cookie);
+        String param = null;
+        if (user == null) {
+            List<String> warnings = new LinkedList<>();
+            String id = request.getParameter("id");
+            user = loginManager.login(id, request.getParameter("password"), warnings);
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                param = id;
+                if ("true".equals(request.getParameter("remember"))) {
+                    Cookie cookie = cookieManager.assign(id);
+                    cookie.setMaxAge(-1);
+                    response.addCookie(cookie);
+                    cookie = new Cookie("id", id);
+                    cookie.setMaxAge(-1);
+                    response.addCookie(cookie);
+                }
+            } else {
+                root.put("warnings", warnings);
+                root.put("id", id);
             }
-            page = Page.profile;
-        } else {
-            warnings.add("Не верный логин или пароль.");
-            root.put("warnings", warnings);
-            root.put("id", id);
-            page = Page.login;
         }
-        htmlManager.render(page, id, request, response, root);
+
+        templateManager.write(htmlManager.render(Page.login, user, param, root), request, response, root);
     }
 }

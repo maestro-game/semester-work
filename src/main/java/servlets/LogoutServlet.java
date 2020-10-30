@@ -3,6 +3,7 @@ package servlets;
 import managers.HtmlManager;
 import managers.Page;
 import managers.CookieManager;
+import managers.TemplateManager;
 import models.User;
 
 import javax.servlet.ServletConfig;
@@ -15,12 +16,14 @@ import java.util.Map;
 public class LogoutServlet extends HttpServlet {
     HtmlManager htmlManager;
     CookieManager cookieManager;
+    TemplateManager templateManager;
 
     @Override
     public void init(ServletConfig config) {
         ServletContext context = config.getServletContext();
         htmlManager = (HtmlManager) context.getAttribute("htmlManager");
         cookieManager = (CookieManager) context.getAttribute("cookieManager");
+        templateManager = (TemplateManager) context.getAttribute("templateManager");
     }
 
     @Override
@@ -44,6 +47,6 @@ public class LogoutServlet extends HttpServlet {
                 session.invalidate();
             }
         }
-        htmlManager.render(Page.home, request, response, root);
+        templateManager.write(htmlManager.render(Page.home, user, root), request, response, root);
     }
 }

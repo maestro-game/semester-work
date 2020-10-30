@@ -1,12 +1,12 @@
 package managers;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import models.User;
+
 import java.util.Map;
 
 public interface HtmlManager {
-    void render(Page page, HttpServletRequest request, HttpServletResponse response, Map<String, Object> root);
+    Page render(Page page, User user, Map<String, Object> root);
 
-    void render(Page page, String param, HttpServletRequest request, HttpServletResponse response, Map<String, Object> root);
+    Page render(Page page, User user, String param, Map<String, Object> root);
 
 }

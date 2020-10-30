@@ -2,6 +2,7 @@ package servlets;
 
 import managers.HtmlManager;
 import managers.Page;
+import managers.TemplateManager;
 import models.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import managers.RegisterManager;
@@ -23,6 +24,7 @@ public class RegisterServlet extends HttpServlet {
     HtmlManager htmlManager;
     RegisterManager registerManager;
     PasswordEncoder passwordEncoder;
+    TemplateManager templateManager;
 
     @Override
     public void init(ServletConfig config) {
@@ -30,43 +32,55 @@ public class RegisterServlet extends HttpServlet {
         htmlManager = (HtmlManager) context.getAttribute("htmlManager");
         registerManager = (RegisterManager) context.getAttribute("registerManager");
         passwordEncoder = (PasswordEncoder) context.getAttribute("passwordEncoder");
+        templateManager = (TemplateManager) context.getAttribute("templateManager");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        htmlManager.render(Page.register, request, response, root);
+        User user = (User) request.getAttribute("user");
+        templateManager.write(htmlManager.render(Page.register, user, root), request, response, root);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
+        User user = (User) request.getAttribute("user");
         Page page = Page.register;
+
         List<String> warnings = new LinkedList<>();
-        try {
-            String id = request.getParameter("id");
-            User user = User.builder().id(id)
+
+        if (user == null) {
+            User candidate = User.builder().id(request.getParameter("id"))
                     .password(passwordEncoder.encode(request.getParameter("password")))
                     .name(request.getParameter("name"))
                     .surname(request.getParameter("surname"))
                     .email(request.getParameter("email"))
-                    .birth(new Date(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("birth")).getTime()))
                     .build();
-
-            if (registerManager.register(user, warnings)) {
-                page = Page.login;
-            } else {
-                root.put("id", id);
-                root.put("name", user.getName());
-                root.put("surname", user.getSurname());
-                root.put("email", user.getEmail());
-                root.put("birth", user.getBirth().toString());
+            try {
+                candidate.setBirth(
+                        new Date(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("birth")).getTime()));
+                if (registerManager.register(candidate, warnings)) {
+                    page = Page.login;
+                } else {
+                    root.put("warnings", warnings);
+                    root.put("id", candidate.getId());
+                    root.put("name", candidate.getName());
+                    root.put("surname", candidate.getSurname());
+                    root.put("email", candidate.getEmail());
+                    root.put("birth", candidate.getBirth());
+                }
+            } catch (ParseException e) {
+                warnings.add("Неверный формат даты (yyyy-MM-dd))");
                 root.put("warnings", warnings);
+                root.put("id", candidate.getId());
+                root.put("name", candidate.getName());
+                root.put("surname", candidate.getSurname());
+                root.put("email", candidate.getEmail());
+                root.put("birth", "");
             }
-        } catch (ParseException e) {
-            warnings.add("Неверный формат даты (yyyy-MM-dd))");
-            root.put("warnings", warnings);
         }
-        htmlManager.render(page, request, response, root);
+
+        templateManager.write(htmlManager.render(page, user, root), request, response, root);
     }
 }

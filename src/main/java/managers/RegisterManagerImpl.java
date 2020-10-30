@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @AllArgsConstructor
-public class SimpleRegisterManager implements RegisterManager {
+public class RegisterManagerImpl implements RegisterManager {
     private UsersRepository usersRepository;
     private CookieManager cookieManager;
 
