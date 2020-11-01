@@ -12,7 +12,9 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     //language=SQL
     private static final String SQL_SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     //language=SQL
-    private static final String SQL_SAVE = "INSERT INTO users values (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_SAVE = "INSERT INTO users values (?, ?, ?, ?, NULL, ?)";
+    //language=SQL
+    private static final String SQL_UPDATE_FIELD = "UPDATE users SET ? = ? WHERE id = ?";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -21,7 +23,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
             row.getString(3),
             row.getString(4),
             row.getString(5),
-            Path.of(row.getString(6)),
+            row.getString(6),
             row.getString(7),
             row.getDate(8),
             row.getString(9),
@@ -31,6 +33,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
 
     @Override
     public Optional<User> findById(String id) {
+        //TODO add image
         return jdbcTemplate.entityQuery(SQL_SELECT_USER_BY_ID, userRowMapper, id);
     }
 
@@ -41,10 +44,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
                 entity.getPassword(),
                 entity.getName(),
                 entity.getSurname(),
-                entity.getMiddleName(),
-                entity.getEmail(),
-                entity.getBirth(),
-                entity.getAbout());
+                entity.getEmail());
     }
 
     @Override
@@ -55,5 +55,10 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     @Override
     public void deleteById(String s) {
         throw new UnsupportedOperationException("Empty Realisation");
+    }
+
+    @Override
+    public void updateField(String id, String field, String data) {
+        jdbcTemplate.executeQuery(SQL_UPDATE_FIELD, field, data, id);
     }
 }

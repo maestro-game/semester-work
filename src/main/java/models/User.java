@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.nio.file.Path;
 import java.sql.Date;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class User {
     private String name;
     private String surname;
     private String middleName;
-    private Path image;
+    private String image;
     private String email;
     private Date birth;
     private String about;

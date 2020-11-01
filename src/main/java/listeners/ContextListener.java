@@ -50,10 +50,19 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         LikesRepository likesRepository = new LikesRepositoryJdbcImpl(jdbcTemplate);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+        properties = new Properties();
+        try {
+            properties.load(servletContext.getResourceAsStream("/WEB-INF/properties/images.properties"));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+        ImageRepository imageRepository = new ImageRepositoryImpl(properties.getProperty("images.basePath"));
+
         servletContext.setAttribute("cookieManager", cookieManager);
         servletContext.setAttribute("templateManager", new TemplateManagerImpl());
+        servletContext.setAttribute("imageRepository", imageRepository);
         servletContext.setAttribute("jdbcTemplate", jdbcTemplate);
-        servletContext.setAttribute("htmlManager", new HtmlManagerImpl(usersRepository, commentsRepository, postsRepository, likesRepository));
+        servletContext.setAttribute("htmlManager", new HtmlManagerImpl(usersRepository, commentsRepository, postsRepository, likesRepository, imageRepository));
         servletContext.setAttribute("registerManager", new RegisterManagerImpl(usersRepository, cookieManager));
         servletContext.setAttribute("loginManager", new LoginManagerImpl(usersRepository, passwordEncoder));
         servletContext.setAttribute("commentRepository", commentsRepository);

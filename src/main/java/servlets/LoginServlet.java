@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
         User user = (User) request.getAttribute("user");
-        templateManager.write(htmlManager.render(Page.login, user, user != null ? user.getId() : null, root), request, response, root);
+        templateManager.write(htmlManager.render(Page.login, user, root), request, response, root);
     }
 
     @Override

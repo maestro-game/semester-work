@@ -57,27 +57,14 @@ public class RegisterServlet extends HttpServlet {
                     .surname(request.getParameter("surname"))
                     .email(request.getParameter("email"))
                     .build();
-            try {
-                candidate.setBirth(
-                        new Date(new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("birth")).getTime()));
-                if (registerManager.register(candidate, warnings)) {
-                    page = Page.login;
-                } else {
-                    root.put("warnings", warnings);
-                    root.put("id", candidate.getId());
-                    root.put("name", candidate.getName());
-                    root.put("surname", candidate.getSurname());
-                    root.put("email", candidate.getEmail());
-                    root.put("birth", candidate.getBirth());
-                }
-            } catch (ParseException e) {
-                warnings.add("Неверный формат даты (yyyy-MM-dd))");
+            if (registerManager.register(candidate, warnings)) {
+                page = Page.login;
+            } else {
                 root.put("warnings", warnings);
                 root.put("id", candidate.getId());
                 root.put("name", candidate.getName());
                 root.put("surname", candidate.getSurname());
                 root.put("email", candidate.getEmail());
-                root.put("birth", "");
             }
         }
 

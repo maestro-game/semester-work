@@ -5,23 +5,30 @@ import managers.Page;
 import managers.TemplateManager;
 import models.Post;
 import models.User;
+import repositories.ImageRepository;
 import repositories.PostsRepository;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@MultipartConfig
 public class PostServlet extends HttpServlet {
     HtmlManager htmlManager;
     PostsRepository postsRepository;
     TemplateManager templateManager;
+    ImageRepository imageRepository;
 
     @Override
     public void init(ServletConfig config) {
@@ -29,33 +36,42 @@ public class PostServlet extends HttpServlet {
         htmlManager = (HtmlManager) context.getAttribute("htmlManager");
         postsRepository = (PostsRepository) context.getAttribute("postsRepository");
         templateManager = (TemplateManager) context.getAttribute("templateManager");
+        imageRepository = (ImageRepository) context.getAttribute("imageRepository");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        User user = (User) request.getServletContext().getAttribute("user");
+        User user = (User) request.getAttribute("user");
         templateManager.write(htmlManager.render(Page.post, user, request.getRequestURI().substring(6), root), request, response, root);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        User id = (User) request.getAttribute("user");
-        if (id != null) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        User user = (User) request.getAttribute("user");
+        if (user != null) {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            //TODO image
             try {
-                postsRepository.save(new Post(null,
-                        id,
-                        timestamp,
-                        null,
-                        request.getParameter("description")));
+                Part part = request.getPart("image");
+                if (part.getSize() == 0) {
+                    //TODO send error
+                    response.setStatus(400);
+                    return;
+                }
+                String sfn = part.getSubmittedFileName();
+                imageRepository.saveForPost(part, postsRepository.saveReturningId(Post.builder()
+                        .author(user)
+                        .timestamp(timestamp)
+                        .description(request.getParameter("description"))
+                        .image(sfn.substring(sfn.lastIndexOf('.')))
+                        .build()));
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
                     throw e;
                 }
                 response.setStatus(400);
             }
+            //TODO redirect on new post
             response.setStatus(200);
         } else {
             //TODO redirect

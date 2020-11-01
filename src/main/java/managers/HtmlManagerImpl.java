@@ -3,10 +3,7 @@ package managers;
 import lombok.AllArgsConstructor;
 import models.Post;
 import models.User;
-import repositories.CommentsRepository;
-import repositories.LikesRepository;
-import repositories.PostsRepository;
-import repositories.UsersRepository;
+import repositories.*;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +14,7 @@ public class HtmlManagerImpl implements HtmlManager {
     CommentsRepository commentsRepository;
     PostsRepository postsRepository;
     LikesRepository likesRepository;
+    ImageRepository imageRepository;
 
     public Page render(Page page, User user, Map<String, Object> root) {
         return render(page, user, null, root);
@@ -41,7 +39,9 @@ public class HtmlManagerImpl implements HtmlManager {
                     if (candidate.isEmpty()) {
                         page = Page.notFound;
                     } else {
-                        root.put("owner", candidate.get());
+                        User user1 = candidate.get();
+                        user1.setImage(imageRepository.pathForUser(user.getId(), user.getImage()));
+                        root.put("owner", user1);
                         root.put("posts", postsRepository.findAllByAuthorId(param));
                     }
                 }
@@ -53,6 +53,7 @@ public class HtmlManagerImpl implements HtmlManager {
                     page = Page.notFound;
                 } else {
                     Post post = candidate.get();
+                    post.setImage(imageRepository.pathForPost(postId, post.getImage()));
                     if (post.getAuthor().getId().equals(user.getId())) {
                         root.put("isOwner", true);
                     }

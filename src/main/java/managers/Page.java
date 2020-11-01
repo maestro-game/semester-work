@@ -7,6 +7,7 @@ public enum Page {
     notFound("notFound.ftl"),
     post("post.ftl"),
     profile("profile.ftl"),
+    profileInfo("profileInfo.ftl"),
     register("register.ftl");
 
     String path;

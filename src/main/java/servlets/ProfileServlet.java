@@ -27,12 +27,7 @@ public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
-        User user = (User) request.getServletContext().getAttribute("user");
+        User user = (User) request.getAttribute("user");
         templateManager.write(htmlManager.render(Page.profile, user, request.getRequestURI().substring(4), root), request, response, root);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
     }
 }

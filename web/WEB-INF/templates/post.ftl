@@ -26,7 +26,7 @@
         <div id="comments">
             <#if comments??>
                 <#list comments as comment>
-                    <div <#if comment.answerTo??> class= "answer"</#if> id= ${comment.id}>
+                    <div <#if comment.answerTo??> class="answer"</#if> id= ${comment.id}>
                         <p>--------------------------------</p>
                         <h4 id="authorName">${comment.author.name} ${comment.author.surname}</h4>
                         <h4>${comment.timestamp}</h4>
@@ -125,7 +125,7 @@
                     success: function (msg) {
                         answers !== undefined ?
                             drawAnswer(msg, username, answers, $("#" + answers + " #text").text(), msg, text) :
-                            drawComment(msg,  username, msg, text);
+                            drawComment(msg, username, msg, text);
                         clearAnswers();
                         button.attr('style', "visibility: hidden");
                     },

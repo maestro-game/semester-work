@@ -33,6 +33,6 @@ public class HomeServlet extends HttpServlet {
         } else {
             page = Page.home;
         }
-        templateManager.write(htmlManager.render(page, user, user != null ? user.getId() : null, root), request, response, root);
+        templateManager.write(htmlManager.render(page, user, root), request, response, root);
     }
 }
