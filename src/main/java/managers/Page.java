@@ -8,7 +8,8 @@ public enum Page {
     post("post.ftl"),
     profile("profile.ftl"),
     profileInfo("profileInfo.ftl"),
-    register("register.ftl");
+    register("register.ftl"),
+    search("search.ftl");
 
     String path;
 

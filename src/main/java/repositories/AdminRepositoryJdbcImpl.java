@@ -25,4 +25,9 @@ public class AdminRepositoryJdbcImpl implements AdminRepository{
     public void deleteById(String s) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void updateField(String id, String field, String data) {
+        throw new UnsupportedOperationException();
+    }
 }

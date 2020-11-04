@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>${profile.name} ${profile.surname}</title>
+    <title>${owner.name} ${owner.surname}</title>
     <link rel="stylesheet" href="../css/profile/main.css">
     <link rel="stylesheet" href="../css/profile/head.css">
     <link rel="stylesheet" href="../css/profile/sidebar.css">
@@ -388,7 +388,7 @@
                         <div class="profile-online">
                             <div class="profile-online-lv">заходил 12 минут назад</div>
                         </div>
-                        <h1 class="page-name">${profile.name} ${profile.surname}</h1>
+                        <h1 class="page-name">${owner.name} ${owner.surname}</h1>
                         <div class="profile-status">
                             <div class="cur-prof-status">Обновил статус</div>
                         </div>
@@ -514,7 +514,7 @@
                                     <div class="post-header-info">
                                         <h5 class="post-author">
                                             <a class="author"
-                                               href="/bronzehair">${profile.name} ${profile.surname}</a>
+                                               href="/bronzehair">${owner.name} ${owner.surname}</a>
                                         </h5>
                                         <div class="post-date">
                                             <a class="post-link" href="/wall356173315_24">

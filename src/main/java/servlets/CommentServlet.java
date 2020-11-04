@@ -39,23 +39,24 @@ public class CommentServlet extends HttpServlet {
             String answers = request.getParameter("answers");
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             try {
-                commentsRepository.save(new Comment(null,
+                Comment comment = new Comment(null,
                         user,
                         timestamp,
                         Post.builder().id(Long.valueOf(request.getParameter("post"))).build(),
                         answers != null ? Comment.builder().id(Long.valueOf(answers)).build() : null,
-                        request.getParameter("text")));
+                        request.getParameter("text"));
+
+                comment.setId(commentsRepository.saveReturningId(comment));
+                response.getWriter().write(objectMapper.writeValueAsString(comment));
+                response.setStatus(200);
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
                     throw e;
                 }
                 response.setStatus(400);
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM в HH:mm:ss");
-            //TODO add timestamp and user to response
-            response.setStatus(200);
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }
@@ -87,13 +88,14 @@ public class CommentServlet extends HttpServlet {
                 }
             }
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
+        response.setContentType("application/json");
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = (User) request.getAttribute("user");
         if (user != null) {
             try {
@@ -106,7 +108,7 @@ public class CommentServlet extends HttpServlet {
                 response.setStatus(400);
             }
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }

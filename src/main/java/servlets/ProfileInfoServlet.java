@@ -48,9 +48,11 @@ public class ProfileInfoServlet extends HttpServlet {
             User user = (User) request.getAttribute("user");
             String field = request.getParameter("field");
             try {
+                int status;
                 switch (field) {
                     case "name", "surname", "middleName", "about", "birth" -> {
                         usersRepository.updateField(user.getId(), field, request.getParameter("data"));
+                        status = 200;
                     }
                     case "image" -> {
                         Part part = request.getPart("image");
@@ -62,21 +64,22 @@ public class ProfileInfoServlet extends HttpServlet {
                         String sfn = part.getSubmittedFileName();
                         usersRepository.updateField(user.getId(), field, sfn.substring(sfn.lastIndexOf('.')));
                         imageRepository.saveForUser(part, user.getId());
+                        status = 200;
                     }
                     default -> {
                         //TODO send error
+                        status = 400;
                     }
                 }
+                response.setStatus(status);
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
                     throw e;
                 }
                 response.setStatus(400);
             }
-            //TODO redirect on new post
-            response.setStatus(200);
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }

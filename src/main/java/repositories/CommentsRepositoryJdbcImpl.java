@@ -13,11 +13,13 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     //language=SQL
     private static final String SQL_FIND_BY_ID = "SELECT * FROM comments WHERE id = ?";
     //language=SQL
-    private static final String SQL_FIND_ALL_BY_POST_ID = "SELECT * FROM comments WHERE post = ? ORDER BY answers is not null, timestamp";
+    private static final String SQL_FIND_ALL_BY_POST_ID = "SELECT * FROM comments WHERE post = ? ORDER BY timestamp";
     //language=SQL
     private static final String SQL_DELETE_BY_ID = "DELETE FROM comments WHERE id = ?";
     //language=SQL
     private static final String SQL_SAFE = "INSERT INTO comments values (default, ?, ?, ?, ?, ?)";
+    //language=SQL
+    private static final String SQL_SAFE_RETURNING_ID = "INSERT INTO comments values (default, ?, ?, ?, ?, ?) returning id";
     //language=SQL
     private static final String SQL_UPDATE_TEXT = "UPDATE comments SET text = ? WHERE id = ?";
 
@@ -36,6 +38,7 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
             null,
             findById(row.getLong(5)).orElse(null),
             row.getString(6));
+    private final RowMapper<Long> longRowMapper = row -> row.getLong(1);
 
     @Override
     public List<Comment> findAllByAuthorId(String authorId) {
@@ -45,6 +48,17 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     @Override
     public List<Comment> findAllByPostId(Long id) {
         return jdbcTemplate.listQuery(SQL_FIND_ALL_BY_POST_ID, commentWithAuthor, id);
+    }
+
+    @Override
+    public Long saveReturningId(Comment comment) {
+        return jdbcTemplate.simpleQuery(SQL_SAFE_RETURNING_ID,
+                longRowMapper,
+                comment.getAuthor().getId(),
+                comment.getTimestamp(),
+                comment.getPost().getId(),
+                comment.getAnswerTo() != null ? comment.getAnswerTo().getId() : null,
+                comment.getText());
     }
 
     @Override

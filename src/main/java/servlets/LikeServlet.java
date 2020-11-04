@@ -37,7 +37,7 @@ public class LikeServlet extends HttpServlet {
                 response.setStatus(400);
             }
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }
@@ -47,7 +47,7 @@ public class LikeServlet extends HttpServlet {
         User user = (User) request.getAttribute("user");
         if (user != null) {
             try {
-                likesRepository.delete(new Like(user, Post.builder().id(Long.valueOf(request.getParameter("postId"))).build()));
+                likesRepository.deleteById(new Like(user, Post.builder().id(Long.valueOf(request.getParameter("postId"))).build()));
                 response.setStatus(200);
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
@@ -56,7 +56,7 @@ public class LikeServlet extends HttpServlet {
                 response.setStatus(400);
             }
         } else {
-            //TODO redirect
+
             response.setStatus(400);
         }
     }

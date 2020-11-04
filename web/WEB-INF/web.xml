@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <session-config>
+        <cookie-config>
+            <name>scp-0178</name>
+        </cookie-config>
+    </session-config>
+
     <servlet>
         <servlet-name>register</servlet-name>
         <servlet-class>servlets.RegisterServlet</servlet-class>

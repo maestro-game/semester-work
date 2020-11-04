@@ -9,5 +9,7 @@ public interface CommentsRepository extends CrudRepository<Comment, Long> {
 
     List<Comment> findAllByPostId(Long id);
 
+    Long saveReturningId(Comment comment);
+
     void updateText(Long id, String text);
 }

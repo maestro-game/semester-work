@@ -17,23 +17,26 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     private static final String SQL_UPDATE_FIELD = "UPDATE users SET ? = ? WHERE id = ?";
 
     private JdbcTemplate jdbcTemplate;
+    private ImageRepository imageRepository;
 
-    private static RowMapper<User> userRowMapper = row -> new User(row.getString(1),
-            null,
-            row.getString(3),
-            row.getString(4),
-            row.getString(5),
-            row.getString(6),
-            row.getString(7),
-            row.getDate(8),
-            row.getString(9),
-            null,
-            null,
-            null);
+    private final RowMapper<User> userRowMapper = row -> {
+        String id = row.getString(1);
+        return new User(id,
+                null,
+                row.getString(3),
+                row.getString(4),
+                row.getString(5),
+                imageRepository.pathForUser(id, row.getString(6)),
+                row.getString(7),
+                row.getDate(8),
+                row.getString(9),
+                null,
+                null,
+                null);
+    };
 
     @Override
     public Optional<User> findById(String id) {
-        //TODO add image
         return jdbcTemplate.entityQuery(SQL_SELECT_USER_BY_ID, userRowMapper, id);
     }
 

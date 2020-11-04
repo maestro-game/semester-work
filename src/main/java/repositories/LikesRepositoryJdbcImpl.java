@@ -6,6 +6,7 @@ import models.Post;
 import models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class LikesRepositoryJdbcImpl implements LikesRepository {
@@ -52,12 +53,22 @@ public class LikesRepositoryJdbcImpl implements LikesRepository {
     }
 
     @Override
+    public Optional<Like> findById(Like like) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void save(Like like) {
         jdbcTemplate.executeQuery(SQL_SAVE, like.getUser().getId(), like.getPost().getId());
     }
 
     @Override
-    public void delete(Like like) {
+    public void update(Like entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteById(Like like) {
         jdbcTemplate.executeQuery(SQL_DELETE, like.getUser().getId(), like.getPost().getId());
     }
 }

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.HashMap;
 
 public class AuthFilter implements Filter {
@@ -26,6 +27,14 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+        // TODO REMOVE \/\/\/\/\/
+        request.setAttribute("user", new User("bronzehair", null, "Vadim", "Belov", null, "jpg", "test@mail.ru", Date.valueOf("2001-01-30"), "test user", null, null, null));
+        if (true) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // TODO REMOVE /\/\/\/\/\
 
         HttpSession session = request.getSession(false);
         if (session != null) {

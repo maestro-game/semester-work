@@ -3,6 +3,7 @@ package servlets;
 import managers.HtmlManager;
 import managers.Page;
 import managers.TemplateManager;
+import models.Category;
 import models.Post;
 import models.User;
 import repositories.ImageRepository;
@@ -59,28 +60,30 @@ public class PostServlet extends HttpServlet {
                     return;
                 }
                 String sfn = part.getSubmittedFileName();
-                imageRepository.saveForPost(part, postsRepository.saveReturningId(Post.builder()
+                Long postId = postsRepository.saveReturningId(Post.builder()
                         .author(user)
                         .timestamp(timestamp)
                         .description(request.getParameter("description"))
                         .image(sfn.substring(sfn.lastIndexOf('.')))
-                        .build()));
+                        .specie(new Category(Long.valueOf(request.getParameter("specie")), null))
+                        .build());
+                imageRepository.saveForPost(part, postId);
+                response.getWriter().write(postId.toString());
+                response.setStatus(200);
             } catch (IllegalArgumentException e) {
                 if (e.getCause().getClass() != SQLException.class) {
                     throw e;
                 }
                 response.setStatus(400);
             }
-            //TODO redirect on new post
-            response.setStatus(200);
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User id = (User) request.getAttribute("user");
         if (id != null) {
             Optional<Post> post = postsRepository.findById(Long.valueOf(request.getParameter("id")));
@@ -98,13 +101,13 @@ public class PostServlet extends HttpServlet {
                 response.setStatus(400);
             }
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User id = (User) request.getAttribute("user");
         if (id != null) {
             Optional<Post> post = postsRepository.findById(Long.valueOf(request.getParameter("id")));
@@ -122,7 +125,7 @@ public class PostServlet extends HttpServlet {
                 response.setStatus(400);
             }
         } else {
-            //TODO redirect
+            response.getWriter().write("redirect");
             response.setStatus(400);
         }
     }

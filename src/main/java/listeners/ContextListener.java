@@ -42,14 +42,6 @@ public class ContextListener implements javax.servlet.ServletContextListener {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplateImpl(dataSource);
 
-        UsersRepository usersRepository = new UsersRepositoryJdbcImpl(jdbcTemplate);
-        CommentsRepository commentsRepository = new CommentsRepositoryJdbcImpl(jdbcTemplate, usersRepository);
-        PostsRepository postsRepository = new PostsRepositoryJdbcImpl(jdbcTemplate, usersRepository);
-        CookieRepository cookieRepository = new CookieRepositoryJdbcImpl(jdbcTemplate);
-        CookieManager cookieManager = new CookieManagerImpl(cookieRepository);
-        LikesRepository likesRepository = new LikesRepositoryJdbcImpl(jdbcTemplate);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
         properties = new Properties();
         try {
             properties.load(servletContext.getResourceAsStream("/WEB-INF/properties/images.properties"));
@@ -57,6 +49,15 @@ public class ContextListener implements javax.servlet.ServletContextListener {
             throw new IllegalArgumentException(e);
         }
         ImageRepository imageRepository = new ImageRepositoryImpl(properties.getProperty("images.basePath"));
+
+        CategoryRepository categoryRepository = new CategoryRepositoryImpl(jdbcTemplate);
+        UsersRepository usersRepository = new UsersRepositoryJdbcImpl(jdbcTemplate, imageRepository);
+        CommentsRepository commentsRepository = new CommentsRepositoryJdbcImpl(jdbcTemplate, usersRepository);
+        PostsRepository postsRepository = new PostsRepositoryJdbcImpl(jdbcTemplate, usersRepository, categoryRepository);
+        CookieRepository cookieRepository = new CookieRepositoryJdbcImpl(jdbcTemplate);
+        CookieManager cookieManager = new CookieManagerImpl(cookieRepository);
+        LikesRepository likesRepository = new LikesRepositoryJdbcImpl(jdbcTemplate);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         servletContext.setAttribute("cookieManager", cookieManager);
         servletContext.setAttribute("templateManager", new TemplateManagerImpl());

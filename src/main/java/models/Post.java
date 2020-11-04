@@ -18,4 +18,5 @@ public class Post {
     private Timestamp timestamp;
     private String description;
     private String image;
+    private Category specie;
 }
