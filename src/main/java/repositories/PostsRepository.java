@@ -5,9 +5,9 @@ import models.Post;
 import java.util.List;
 
 public interface PostsRepository extends CrudRepository<Post, Long> {
-    List<Post> findAllByAuthorId(String id);
+    List<Post> findPageByAuthorId(String authorId, int offset, int limit);
 
-    List<Post> findAllByCategory(Taxon taxon, Long id);
+    List<Post> findPageByCategory(Taxon taxon, Long id, int offset, int limit);
 
     void updateDescription(Long id, String text);
 

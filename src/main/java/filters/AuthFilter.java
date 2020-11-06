@@ -21,6 +21,7 @@ public class AuthFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         ServletContext context = filterConfig.getServletContext();
         cookieManager = (CookieManager) context.getAttribute("cookieManager");
+        usersRepository = (UsersRepository) context.getAttribute("usersRepository");
     }
 
     @Override
@@ -28,13 +29,13 @@ public class AuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        // TODO REMOVE \/\/\/\/\/
-        request.setAttribute("user", new User("bronzehair", null, "Vadim", "Belov", null, "jpg", "test@mail.ru", Date.valueOf("2001-01-30"), "test user", null, null, null));
-        if (true) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        // TODO REMOVE /\/\/\/\/\
+    //        // TODO REMOVE \/\/\/\/\/
+    //        request.setAttribute("user", new User("bronzehair", null, "Vadim", "Belov", null, "jpg", "test@mail.ru", Date.valueOf("2001-01-30"), "test user", null, null, null));
+    //        if (true) {
+    //            filterChain.doFilter(request, response);
+    //            return;
+    //        }
+    //        // TODO REMOVE /\/\/\/\/\
 
         HttpSession session = request.getSession(false);
         if (session != null) {

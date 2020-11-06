@@ -9,11 +9,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     //language=SQL
-    private static final String SQL_FIND_ALL_BY_AUTHOR_ID = "SELECT * FROM comments WHERE author = ?";
+    private static final String SQL_FIND_PAGE_BY_AUTHOR_ID = "SELECT * FROM comments WHERE author = ? offset ? limit ?";
     //language=SQL
     private static final String SQL_FIND_BY_ID = "SELECT * FROM comments WHERE id = ?";
     //language=SQL
-    private static final String SQL_FIND_ALL_BY_POST_ID = "SELECT * FROM comments WHERE post = ? ORDER BY timestamp";
+    private static final String SQL_FIND_PAGE_BY_POST_ID = "SELECT * FROM comments WHERE post = ? ORDER BY timestamp offset ? limit ?";
     //language=SQL
     private static final String SQL_DELETE_BY_ID = "DELETE FROM comments WHERE id = ?";
     //language=SQL
@@ -41,13 +41,13 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     private final RowMapper<Long> longRowMapper = row -> row.getLong(1);
 
     @Override
-    public List<Comment> findAllByAuthorId(String authorId) {
-        return jdbcTemplate.listQuery(SQL_FIND_ALL_BY_AUTHOR_ID, commentRowMapper, authorId);
+    public List<Comment> findPageByAuthorId(String authorId, int limit, int offset) {
+        return jdbcTemplate.listQuery(SQL_FIND_PAGE_BY_AUTHOR_ID, commentRowMapper, authorId, limit, offset);
     }
 
     @Override
-    public List<Comment> findAllByPostId(Long id) {
-        return jdbcTemplate.listQuery(SQL_FIND_ALL_BY_POST_ID, commentWithAuthor, id);
+    public List<Comment> findPageByPostId(Long id, int limit, int offset) {
+        return jdbcTemplate.listQuery(SQL_FIND_PAGE_BY_POST_ID, commentWithAuthor, id, limit, offset);
     }
 
     @Override

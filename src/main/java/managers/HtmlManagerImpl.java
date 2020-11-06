@@ -33,7 +33,7 @@ public class HtmlManagerImpl implements HtmlManager {
                         root.put("isOwner", true);
                     }
                     root.put("owner", user);
-                    root.put("posts", postsRepository.findAllByAuthorId(param));
+                    root.put("posts", postsRepository.findPageByAuthorId(param, (int) root.get("offset"), (int) root.get("limit")));
                 } else {
                     Optional<User> candidate = usersRepository.findById(param);
                     if (candidate.isEmpty()) {
@@ -42,7 +42,7 @@ public class HtmlManagerImpl implements HtmlManager {
                         User user1 = candidate.get();
                         user1.setImage(imageRepository.pathForUser(user.getId(), user.getImage()));
                         root.put("owner", user1);
-                        root.put("posts", postsRepository.findAllByAuthorId(param));
+                        root.put("posts", postsRepository.findPageByAuthorId(param, (int) root.get("offset"), (int) root.get("limit")));
                     }
                 }
             }
@@ -58,7 +58,7 @@ public class HtmlManagerImpl implements HtmlManager {
                         root.put("isOwner", true);
                     }
                     root.put("post", post);
-                    root.put("comments", commentsRepository.findAllByPostId(post.getId()));
+                    root.put("comments", commentsRepository.findPageByPostId(post.getId(), (int) root.get("offset"), (int) root.get("limit")));
                     root.put("likes", likesRepository.countByPostId(postId));
                 }
             }

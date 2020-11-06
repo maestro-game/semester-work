@@ -5,9 +5,9 @@ import models.Comment;
 import java.util.List;
 
 public interface CommentsRepository extends CrudRepository<Comment, Long> {
-    List<Comment> findAllByAuthorId(String author);
+    List<Comment> findPageByAuthorId(String authorId, int limit, int offset);
 
-    List<Comment> findAllByPostId(Long id);
+    List<Comment> findPageByPostId(Long id, int limit, int offset);
 
     Long saveReturningId(Comment comment);
 

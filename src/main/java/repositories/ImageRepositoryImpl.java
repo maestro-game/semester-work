@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 @AllArgsConstructor
 public class ImageRepositoryImpl implements ImageRepository{
@@ -42,11 +41,13 @@ public class ImageRepositoryImpl implements ImageRepository{
 
     @Override
     public String pathForPost(Long postId, String extension) {
+        if (extension == null) return null;
         return againHateDuplicates(postId.toString(), extension, "/posts/");
     }
 
     @Override
     public String pathForUser(String userId, String extension) {
+        if (extension == null) return null;
         return againHateDuplicates(userId, extension, "/users/");
     }
 }

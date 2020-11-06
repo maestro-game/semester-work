@@ -9,7 +9,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PostsRepositoryJdbcImpl implements PostsRepository {
     //language=SQL
-    private static final String SQL_SELECT_BY_AUTHOR_ID = "SELECT * FROM posts WHERE author = ?";
+    private static final String SQL_SELECT_PAGE_BY_AUTHOR_ID = "SELECT * FROM posts WHERE author = ? offset ? limit ?";
     //language=SQL
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM posts WHERE id = ?";
     //language=SQL
@@ -17,7 +17,7 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
     //language=SQL
     private static final String SQL_SAVE = "INSERT INTO posts values (default, ?, ?, ?, ?, ?) returning id";
     //language=SQL
-    private static final String SQL_SELECT_BY_CATEGORY = "SELECT * FROM posts WHERE specie > ? AND specie <= ?";
+    private static final String SQL_SELECT_PAGE_BY_CATEGORY = "SELECT * FROM posts WHERE specie > ? AND specie <= ? offset ? limit ?";
 
     private JdbcTemplate jdbcTemplate;
     UsersRepository usersRepository;
@@ -40,14 +40,14 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
 
 
     @Override
-    public List<Post> findAllByAuthorId(String authorId) {
-        return jdbcTemplate.listQuery(SQL_SELECT_BY_AUTHOR_ID, postRowMapper, authorId);
+    public List<Post> findPageByAuthorId(String authorId, int offset, int limit) {
+        return jdbcTemplate.listQuery(SQL_SELECT_PAGE_BY_AUTHOR_ID, postRowMapper, authorId, offset, limit);
     }
 
     @Override
-    public List<Post> findAllByCategory(Taxon taxon, Long id) {
+    public List<Post> findPageByCategory(Taxon taxon, Long id, int offset, int limit) {
         long zero = taxon.getParent().getBitMask() & id;
-        return jdbcTemplate.listQuery(SQL_SELECT_BY_CATEGORY, postRowMapper, zero, zero + taxon.getBitMask(), taxon.getDistance());
+        return jdbcTemplate.listQuery(SQL_SELECT_PAGE_BY_CATEGORY, postRowMapper, zero, zero + taxon.getBitMask(), taxon.getDistance(), offset, limit);
     }
 
     @Override

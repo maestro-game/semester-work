@@ -70,6 +70,7 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         servletContext.setAttribute("objectMapper", new ObjectMapper());
         servletContext.setAttribute("passwordEncoder", passwordEncoder);
         servletContext.setAttribute("likesRepository", likesRepository);
+        servletContext.setAttribute("usersRepository", usersRepository);
     }
 
     @Override

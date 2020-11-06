@@ -28,6 +28,10 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> root = new HashMap<>();
         User user = (User) request.getAttribute("user");
+        int pageSize = 15;
+        int page = Integer.parseInt(request.getParameter("page"));
+        root.put("offset", pageSize*(page - 1));
+        root.put("limit", pageSize);
         templateManager.write(htmlManager.render(Page.profile, user, request.getRequestURI().substring(4), root), request, response, root);
     }
 }

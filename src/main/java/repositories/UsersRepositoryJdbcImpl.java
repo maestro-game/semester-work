@@ -22,14 +22,14 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     private final RowMapper<User> userRowMapper = row -> {
         String id = row.getString(1);
         return new User(id,
-                null,
+                row.getString(2),
                 row.getString(3),
                 row.getString(4),
                 row.getString(5),
-                imageRepository.pathForUser(id, row.getString(6)),
-                row.getString(7),
-                row.getDate(8),
-                row.getString(9),
+                row.getString(6),
+                row.getDate(7),
+                row.getString(8),
+                imageRepository.pathForUser(id, row.getString(9)),
                 null,
                 null,
                 null);

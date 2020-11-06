@@ -18,10 +18,10 @@ public class User {
     private String name;
     private String surname;
     private String middleName;
-    private String image;
     private String email;
     private Date birth;
     private String about;
+    private String image;
     private List<Category> followCats;
     private List<User> followUsers;
     private List<Post> likes;
