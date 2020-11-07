@@ -17,7 +17,7 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
     //language=SQL
     private static final String SQL_SAVE = "INSERT INTO posts values (default, ?, ?, ?, ?, ?) returning id";
     //language=SQL
-    private static final String SQL_SELECT_PAGE_BY_CATEGORY = "SELECT * FROM posts WHERE specie > ? AND specie <= ? offset ? limit ?";
+    private static final String SQL_SELECT_PAGE_BY_CATEGORY = "SELECT * FROM posts WHERE specie > ? AND specie <= ? ORDER BY timestamp offset ? limit ?";
 
     private JdbcTemplate jdbcTemplate;
     UsersRepository usersRepository;
@@ -68,11 +68,6 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
     @Override
     public long saveReturningId(Post post) {
         return jdbcTemplate.simpleQuery(SQL_SAVE, postReturningId, post.getAuthor().getId(), post.getTimestamp(), post.getDescription(), post.getImage(), post.getSpecie());
-    }
-
-    @Override
-    public void update(Post entity) {
-        throw new UnsupportedOperationException("Empty Realisation");
     }
 
     @Override

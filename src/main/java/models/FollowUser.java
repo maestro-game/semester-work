@@ -3,9 +3,9 @@ package models;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public class FollowCat {
+@Getter
+public class FollowUser {
     User user;
-    Category category;
+    User follow;
 }

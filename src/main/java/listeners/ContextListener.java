@@ -24,7 +24,6 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_30);
         cfg.setServletContextForTemplateLoading(servletContext, "/WEB-INF/templates");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
-        servletContext.setAttribute("cfg", cfg);
         Properties properties = new Properties();
         try {
             properties.load(servletContext.getResourceAsStream("/WEB-INF/properties/db.properties"));
@@ -58,14 +57,19 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         CookieManager cookieManager = new CookieManagerImpl(cookieRepository);
         LikesRepository likesRepository = new LikesRepositoryJdbcImpl(jdbcTemplate);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        FollowCatsRepository followCatsRepository = new FollowCatsRepositoryJdbcImpl(jdbcTemplate, categoryRepository);
+        FollowUsersRepository followUsersRepository = new FollowUsersRepositoryJdbcImpl(jdbcTemplate, usersRepository);
 
+        servletContext.setAttribute("cfg", cfg);
+        servletContext.setAttribute("followCatsRepository", followCatsRepository);
+        servletContext.setAttribute("followUsersRepository", followUsersRepository);
         servletContext.setAttribute("cookieManager", cookieManager);
         servletContext.setAttribute("templateManager", new TemplateManagerImpl());
         servletContext.setAttribute("imageRepository", imageRepository);
         servletContext.setAttribute("jdbcTemplate", jdbcTemplate);
-        servletContext.setAttribute("htmlManager", new HtmlManagerImpl(usersRepository, commentsRepository, postsRepository, likesRepository, imageRepository));
+        servletContext.setAttribute("htmlManager", new HtmlManagerImpl(usersRepository, commentsRepository, postsRepository, likesRepository, imageRepository, categoryRepository, followUsersRepository, followCatsRepository));
         servletContext.setAttribute("registerManager", new RegisterManagerImpl(usersRepository, cookieManager));
-        servletContext.setAttribute("loginManager", new LoginManagerImpl(usersRepository, passwordEncoder));
+        servletContext.setAttribute("loginManager", new LoginManagerImpl(usersRepository, imageRepository, passwordEncoder));
         servletContext.setAttribute("commentRepository", commentsRepository);
         servletContext.setAttribute("objectMapper", new ObjectMapper());
         servletContext.setAttribute("passwordEncoder", passwordEncoder);

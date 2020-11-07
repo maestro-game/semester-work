@@ -1,6 +1,8 @@
 package managers;
 
 public enum Page {
+    feed("feed.ftl"),
+    follow("follow.ftl"),
     home("home.ftl"),
     login("login.ftl"),
     messages("messages.ftl"),

@@ -31,11 +31,6 @@ public class CookieRepositoryJdbcImpl implements CookieRepository{
     }
 
     @Override
-    public void update(Cookie entity) {
-        throw new UnsupportedOperationException("Empty Realisation");
-    }
-
-    @Override
     public void deleteById(Cookie cookie) {
         jdbcTemplate.executeQuery(SQL_DELETE, cookie.getName(), cookie.getValue());
     }

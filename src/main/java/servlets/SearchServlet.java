@@ -1,10 +1,14 @@
 package servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import managers.HtmlManager;
 import managers.Page;
 import managers.TemplateManager;
 import models.User;
+import repositories.CategoryRepository;
 import repositories.PostsRepository;
+import repositories.Taxon;
+import repositories.UsersRepository;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -17,9 +21,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SearchServlet extends HttpServlet {
+    static final int PAGE_SIZE = 15;
+
     HtmlManager htmlManager;
+    CategoryRepository categoryRepository;
     PostsRepository postsRepository;
     TemplateManager templateManager;
+    UsersRepository usersRepository;
+    ObjectMapper objectMapper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -27,6 +36,9 @@ public class SearchServlet extends HttpServlet {
         htmlManager = (HtmlManager) context.getAttribute("htmlManager");
         postsRepository = (PostsRepository) context.getAttribute("postsRepository");
         templateManager = (TemplateManager) context.getAttribute("templateManager");
+        usersRepository = (UsersRepository) context.getAttribute("usersRepository");
+        objectMapper = (ObjectMapper) context.getAttribute("objectMapper");
+        categoryRepository = (CategoryRepository) context.getAttribute("categoryRepository");
     }
 
     @Override
@@ -39,5 +51,28 @@ public class SearchServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        String result;
+        switch (request.getParameter("type")) {
+            case "user" -> {
+                int page = Integer.parseInt(request.getParameter("page"));
+                result = objectMapper.writeValueAsString(usersRepository.searchById(request.getParameter("id"), PAGE_SIZE * (page - 1), PAGE_SIZE));
+            }
+            case "category" -> {
+                int page = Integer.parseInt(request.getParameter("page"));
+                Taxon taxon = Taxon.values()[Integer.parseInt(request.getParameter("taxon"))];
+                long id = Long.parseLong(request.getParameter("id"));
+                result = objectMapper.writeValueAsString(postsRepository.findPageByCategory(taxon, id, PAGE_SIZE * (page - 1), PAGE_SIZE));
+            }
+            case "getCats" -> {
+                Taxon taxon = Taxon.values()[Integer.parseInt(request.getParameter("taxon"))];
+                long id = Long.parseLong(request.getParameter("id"));
+                result = objectMapper.writeValueAsString(categoryRepository.findChildCategories(taxon, id));
+            }
+            default -> {
+                response.setStatus(400);
+                result = "unexpected type";
+            }
+        }
+        response.getWriter().write(result);
     }
 }

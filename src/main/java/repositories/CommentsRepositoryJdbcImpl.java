@@ -2,16 +2,16 @@ package repositories;
 
 import lombok.AllArgsConstructor;
 import models.Comment;
+import models.User;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
-public class CommentsRepositoryJdbcImpl implements CommentsRepository{
+public class CommentsRepositoryJdbcImpl implements CommentsRepository {
     //language=SQL
     private static final String SQL_FIND_PAGE_BY_AUTHOR_ID = "SELECT * FROM comments WHERE author = ? offset ? limit ?";
     //language=SQL
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM comments WHERE id = ?";
+    private static final String SQL_FIND_BY_ID = "SELECT u.*, c.* FROM comments c join users u on id = ? and u.id = c.author";
     //language=SQL
     private static final String SQL_FIND_PAGE_BY_POST_ID = "SELECT * FROM comments WHERE post = ? ORDER BY timestamp offset ? limit ?";
     //language=SQL
@@ -24,20 +24,30 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
     private static final String SQL_UPDATE_TEXT = "UPDATE comments SET text = ? WHERE id = ?";
 
     private JdbcTemplate jdbcTemplate;
-    UsersRepository usersRepository;
 
-    private final RowMapper<Comment> commentRowMapper = row -> new Comment(row.getLong(1),
+    public CommentsRepositoryJdbcImpl(JdbcTemplate jdbcTemplate, UsersRepository usersRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.userRowMapper = usersRepository.getRowMapper();
+    }
+
+    private RowMapper<User> userRowMapper;
+    private RowMapper<Comment> commentRowMapper = row -> new Comment(row.getLong(1),
             null,
             row.getTimestamp(3),
             null,
             null,
             row.getString(6));
-    private final RowMapper<Comment> commentWithAuthor = row -> new Comment(row.getLong(1),
-            usersRepository.findById(row.getString(2)).get(),
-            row.getTimestamp(3),
-            null,
-            findById(row.getLong(5)).orElse(null),
-            row.getString(6));
+
+    private final RowMapper<Comment> commentWithAuthor = row -> {
+        long ansId = row.getLong("answers");
+        return new Comment(row.getLong("comments.id"),
+                userRowMapper.mapRow(row),
+                row.getTimestamp("timestamp"),
+                null,
+                ansId == 0 ? Comment.builder().id(ansId).build() : null,
+                row.getString("text"));
+    };
+
     private final RowMapper<Long> longRowMapper = row -> row.getLong(1);
 
     @Override
@@ -74,11 +84,6 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository{
                 comment.getPost().getId(),
                 comment.getAnswerTo() != null ? comment.getAnswerTo().getId() : null,
                 comment.getText());
-    }
-
-    @Override
-    public void update(Comment entity) {
-        throw new UnsupportedOperationException("Empty Realisation");
     }
 
     @Override

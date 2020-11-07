@@ -24,17 +24,17 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
+    public RowMapper<Category> getRowMapper() {
+        return categoryRowMapper;
+    }
+
+    @Override
     public Optional<Category> findById(Long id) {
         return jdbcTemplate.entityQuery(SQL_SELECT_BY_ID, categoryRowMapper, id);
     }
 
     @Override
     public void save(Category entity) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void update(Category entity) {
         throw new UnsupportedOperationException();
     }
 

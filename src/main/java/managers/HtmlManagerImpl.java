@@ -10,11 +10,16 @@ import java.util.Optional;
 
 @AllArgsConstructor
 public class HtmlManagerImpl implements HtmlManager {
+    final static int PAGE_SIZE = 15;
+
     UsersRepository usersRepository;
     CommentsRepository commentsRepository;
     PostsRepository postsRepository;
     LikesRepository likesRepository;
     ImageRepository imageRepository;
+    CategoryRepository categoryRepository;
+    FollowUsersRepository followUsersRepository;
+    FollowCatsRepository followCatsRepository;
 
     public Page render(Page page, User user, Map<String, Object> root) {
         return render(page, user, null, root);
@@ -27,13 +32,16 @@ public class HtmlManagerImpl implements HtmlManager {
                     return render(Page.profile, user, user.getId(), root);
                 }
             }
-            case profile -> {
-                if (user.getId().equals(param)) {
-                    if (param.equals(user.getId())) {
-                        root.put("isOwner", true);
-                    }
+            case follow -> {
+                root.put("followsCategories", followCatsRepository.findByUserId(user.getId()));
+                root.put("followsUsers", followUsersRepository.findByUserId(user.getId()));
+            }
+            case profile, profileInfo -> {
+                if (param.equals(user.getId())) {
+                    root.put("isOwner", true);
                     root.put("owner", user);
-                    root.put("posts", postsRepository.findPageByAuthorId(param, (int) root.get("offset"), (int) root.get("limit")));
+                    int pageNum = (int) root.get("page");
+                    root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * (pageNum - 1), PAGE_SIZE));
                 } else {
                     Optional<User> candidate = usersRepository.findById(param);
                     if (candidate.isEmpty()) {
@@ -42,7 +50,8 @@ public class HtmlManagerImpl implements HtmlManager {
                         User user1 = candidate.get();
                         user1.setImage(imageRepository.pathForUser(user.getId(), user.getImage()));
                         root.put("owner", user1);
-                        root.put("posts", postsRepository.findPageByAuthorId(param, (int) root.get("offset"), (int) root.get("limit")));
+                        int pageNum = (int) root.get("page");
+                        root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * (pageNum - 1), PAGE_SIZE));
                     }
                 }
             }
@@ -58,7 +67,8 @@ public class HtmlManagerImpl implements HtmlManager {
                         root.put("isOwner", true);
                     }
                     root.put("post", post);
-                    root.put("comments", commentsRepository.findPageByPostId(post.getId(), (int) root.get("offset"), (int) root.get("limit")));
+                    int pageNum = (int) root.get("page");
+                    root.put("comments", commentsRepository.findPageByPostId(post.getId(), PAGE_SIZE * (pageNum - 1), PAGE_SIZE));
                     root.put("likes", likesRepository.countByPostId(postId));
                 }
             }
