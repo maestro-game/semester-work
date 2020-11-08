@@ -27,16 +27,21 @@ public class HtmlManagerImpl implements HtmlManager {
 
     public Page render(Page page, User user, String param, Map<String, Object> root) {
         switch (page) {
-            case login, register, home -> {
+            case login:
+            case register:
+            case home: {
                 if (user != null) {
                     return render(Page.profile, user, user.getId(), root);
                 }
+                break;
             }
-            case follow -> {
+            case follow: {
                 root.put("followsCategories", followCatsRepository.findByUserId(user.getId()));
                 root.put("followsUsers", followUsersRepository.findByUserId(user.getId()));
+                break;
             }
-            case profile, profileInfo -> {
+            case profile:
+            case profileInfo: {
                 if (param.equals(user.getId())) {
                     root.put("isOwner", true);
                     root.put("owner", user);
@@ -55,7 +60,7 @@ public class HtmlManagerImpl implements HtmlManager {
                     }
                 }
             }
-            case post -> {
+            case post: {
                 Long postId = Long.parseLong(param);
                 Optional<Post> candidate = postsRepository.findById(postId);
                 if (candidate.isEmpty()) {
@@ -71,6 +76,7 @@ public class HtmlManagerImpl implements HtmlManager {
                     root.put("comments", commentsRepository.findPageByPostId(post.getId(), PAGE_SIZE * ((pageNum == null ? 1 : pageNum) - 1), PAGE_SIZE));
                     root.put("likes", likesRepository.countByPostId(postId));
                 }
+                break;
             }
         }
         root.put("user", user);

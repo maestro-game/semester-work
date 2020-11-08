@@ -20,8 +20,11 @@ public class RegisterManagerImpl implements RegisterManager {
         } catch (IllegalArgumentException e) {
             SQLException sql = (SQLException) e.getCause();
             switch (sql.getSQLState()) {
-                case "23505" -> warnings.add("Пользователь с таким логином уже существует.");
-                default -> throw new IllegalArgumentException(e);
+                case "23505": {
+                    warnings.add("Пользователь с таким логином уже существует.");
+                    break;
+                }
+                default: throw new IllegalArgumentException(e);
             }
         }
         return false;

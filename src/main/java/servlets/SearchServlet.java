@@ -53,24 +53,30 @@ public class SearchServlet extends HttpServlet {
 
         String result;
         switch (request.getParameter("type")) {
-            case "user" -> {
-                int page = Integer.parseInt(request.getParameter("page"));
+            case "user": {
+                String temp = request.getParameter("page");
+                int page = temp == null ? 1 : Integer.parseInt(temp);
                 result = objectMapper.writeValueAsString(usersRepository.searchById(request.getParameter("id"), PAGE_SIZE * (page - 1), PAGE_SIZE));
+                break;
             }
-            case "category" -> {
-                int page = Integer.parseInt(request.getParameter("page"));
+            case "category": {
+                String temp = request.getParameter("page");
+                int page = temp == null ? 1 : Integer.parseInt(temp);
                 Taxon taxon = Taxon.values()[Integer.parseInt(request.getParameter("taxon"))];
                 long id = Long.parseLong(request.getParameter("id"));
                 result = objectMapper.writeValueAsString(postsRepository.findPageByCategory(taxon, id, PAGE_SIZE * (page - 1), PAGE_SIZE));
+                break;
             }
-            case "getCats" -> {
+            case "getCats": {
                 Taxon taxon = Taxon.values()[Integer.parseInt(request.getParameter("taxon"))];
                 long id = Long.parseLong(request.getParameter("id"));
                 result = objectMapper.writeValueAsString(categoryRepository.findChildCategories(taxon, id));
+                break;
             }
-            default -> {
+            default: {
                 response.setStatus(400);
                 result = "unexpected type";
+                break;
             }
         }
         response.getWriter().write(result);

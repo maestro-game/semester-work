@@ -47,6 +47,6 @@ public class LogoutServlet extends HttpServlet {
                 session.invalidate();
             }
         }
-        templateManager.write(htmlManager.render(Page.home, user, root), request, response, root);
+        templateManager.write(htmlManager.render(Page.home, null, root), request, response, root);
     }
 }

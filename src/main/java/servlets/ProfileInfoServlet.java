@@ -50,11 +50,16 @@ public class ProfileInfoServlet extends HttpServlet {
             try {
                 int status;
                 switch (field) {
-                    case "name", "surname", "middleName", "about", "birth" -> {
+                    case "name":
+                    case "surname":
+                    case "middleName":
+                    case "about":
+                    case "birth": {
                         usersRepository.updateField(user.getId(), field, request.getParameter("data"));
                         status = 200;
+                        break;
                     }
-                    case "image" -> {
+                    case "image": {
                         Part part = request.getPart("image");
                         if (part.getSize() == 0) {
                             //TODO send error
@@ -65,10 +70,12 @@ public class ProfileInfoServlet extends HttpServlet {
                         usersRepository.updateField(user.getId(), field, sfn.substring(sfn.lastIndexOf('.')));
                         imageRepository.saveForUser(part, user.getId());
                         status = 200;
+                        break;
                     }
-                    default -> {
+                    default: {
                         //TODO send error
                         status = 400;
+                        break;
                     }
                 }
                 response.setStatus(status);
