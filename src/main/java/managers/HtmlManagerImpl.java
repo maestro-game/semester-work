@@ -59,6 +59,7 @@ public class HtmlManagerImpl implements HtmlManager {
                         root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * ((pageNum == null ? 1 : pageNum) - 1), PAGE_SIZE));
                     }
                 }
+                break;
             }
             case post: {
                 Long postId = Long.parseLong(param);
