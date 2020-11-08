@@ -40,8 +40,8 @@ public class HtmlManagerImpl implements HtmlManager {
                 if (param.equals(user.getId())) {
                     root.put("isOwner", true);
                     root.put("owner", user);
-                    int pageNum = (int) root.get("page");
-                    root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * (pageNum - 1), PAGE_SIZE));
+                    Integer pageNum = (Integer) root.get("page");
+                    root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * ((pageNum == null ? 1 : pageNum) - 1), PAGE_SIZE));
                 } else {
                     Optional<User> candidate = usersRepository.findById(param);
                     if (candidate.isEmpty()) {
@@ -50,8 +50,8 @@ public class HtmlManagerImpl implements HtmlManager {
                         User user1 = candidate.get();
                         user1.setImage(imageRepository.pathForUser(user.getId(), user.getImage()));
                         root.put("owner", user1);
-                        int pageNum = (int) root.get("page");
-                        root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * (pageNum - 1), PAGE_SIZE));
+                        Integer pageNum = (Integer) root.get("page");
+                        root.put("posts", postsRepository.findPageByAuthorId(param, PAGE_SIZE * ((pageNum == null ? 1 : pageNum) - 1), PAGE_SIZE));
                     }
                 }
             }
@@ -67,8 +67,8 @@ public class HtmlManagerImpl implements HtmlManager {
                         root.put("isOwner", true);
                     }
                     root.put("post", post);
-                    int pageNum = (int) root.get("page");
-                    root.put("comments", commentsRepository.findPageByPostId(post.getId(), PAGE_SIZE * (pageNum - 1), PAGE_SIZE));
+                    Integer pageNum = (Integer) root.get("page");
+                    root.put("comments", commentsRepository.findPageByPostId(post.getId(), PAGE_SIZE * ((pageNum == null ? 1 : pageNum) - 1), PAGE_SIZE));
                     root.put("likes", likesRepository.countByPostId(postId));
                 }
             }
