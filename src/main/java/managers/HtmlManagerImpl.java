@@ -29,19 +29,17 @@ public class HtmlManagerImpl implements HtmlManager {
         switch (page) {
             case login:
             case register:
-            case home: {
+            case home:
                 if (user != null) {
                     return render(Page.profile, user, user.getId(), root);
                 }
                 break;
-            }
-            case follow: {
+            case follow:
                 root.put("followsCategories", followCatsRepository.findByUserId(user.getId()));
                 root.put("followsUsers", followUsersRepository.findByUserId(user.getId()));
                 break;
-            }
             case profile:
-            case profileInfo: {
+            case profileInfo:
                 if (param.equals(user.getId())) {
                     root.put("isOwner", true);
                     root.put("owner", user);
@@ -60,8 +58,7 @@ public class HtmlManagerImpl implements HtmlManager {
                     }
                 }
                 break;
-            }
-            case post: {
+            case post:
                 Long postId = Long.parseLong(param);
                 Optional<Post> candidate = postsRepository.findById(postId);
                 if (candidate.isEmpty()) {
@@ -69,7 +66,7 @@ public class HtmlManagerImpl implements HtmlManager {
                 } else {
                     Post post = candidate.get();
                     post.setImage(imageRepository.pathForPost(postId, post.getImage()));
-                    if (post.getAuthor().getId().equals(user.getId())) {
+                    if (user != null && post.getAuthor().getId().equals(user.getId())) {
                         root.put("isOwner", true);
                     }
                     root.put("post", post);
@@ -78,7 +75,6 @@ public class HtmlManagerImpl implements HtmlManager {
                     root.put("likes", likesRepository.countByPostId(postId));
                 }
                 break;
-            }
         }
         root.put("user", user);
         return page;

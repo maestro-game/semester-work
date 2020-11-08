@@ -41,7 +41,7 @@ public class FollowsServlet extends HttpServlet {
         if (user == null) {
             response.sendRedirect("/login");
         } else {
-            templateManager.write(htmlManager.render(Page.search, user, request.getRequestURI().substring(6), root), request, response, root);
+            templateManager.write(htmlManager.render(Page.follow, user, request.getRequestURI().substring(6), root), request, response, root);
         }
     }
 
@@ -50,7 +50,7 @@ public class FollowsServlet extends HttpServlet {
         User user = (User) request.getAttribute("user");
         if (user != null) {
             switch (request.getParameter("type")) {
-                case "user": {
+                case "user":
                     try {
                         followUsersRepository.save(new FollowUser(user, User.builder().id(request.getParameter("follow")).build()));
                     } catch (IllegalArgumentException e) {
@@ -61,8 +61,7 @@ public class FollowsServlet extends HttpServlet {
                         response.setStatus(400);
                     }
                     break;
-                }
-                case "category": {
+                case "category":
                     try {
                         followCatsRepository.save(new FollowCat(user, new Category(Long.parseLong(request.getParameter("follow")), null)));
                     } catch (IllegalArgumentException e) {
@@ -73,7 +72,6 @@ public class FollowsServlet extends HttpServlet {
                         response.setStatus(400);
                     }
                     break;
-                }
             }
         } else {
             response.getWriter().write("redirect");

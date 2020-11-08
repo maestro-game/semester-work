@@ -54,12 +54,11 @@ public class ProfileInfoServlet extends HttpServlet {
                     case "surname":
                     case "middleName":
                     case "about":
-                    case "birth": {
+                    case "birth":
                         usersRepository.updateField(user.getId(), field, request.getParameter("data"));
                         status = 200;
                         break;
-                    }
-                    case "image": {
+                    case "image":
                         Part part = request.getPart("image");
                         if (part.getSize() == 0) {
                             //TODO send error
@@ -71,12 +70,10 @@ public class ProfileInfoServlet extends HttpServlet {
                         imageRepository.saveForUser(part, user.getId());
                         status = 200;
                         break;
-                    }
-                    default: {
+                    default:
                         //TODO send error
                         status = 400;
                         break;
-                    }
                 }
                 response.setStatus(status);
             } catch (IllegalArgumentException e) {

@@ -73,11 +73,10 @@ public class SearchServlet extends HttpServlet {
                 result = objectMapper.writeValueAsString(categoryRepository.findChildCategories(taxon, id));
                 break;
             }
-            default: {
+            default:
                 response.setStatus(400);
                 result = "unexpected type";
                 break;
-            }
         }
         response.getWriter().write(result);
     }
