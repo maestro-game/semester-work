@@ -1,6 +1,5 @@
 package repositories;
 
-import lombok.AllArgsConstructor;
 import models.Comment;
 import models.User;
 

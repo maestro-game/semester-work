@@ -3,7 +3,10 @@ package servlets;
 import managers.HtmlManager;
 import managers.Page;
 import managers.TemplateManager;
-import models.*;
+import models.Category;
+import models.FollowCat;
+import models.FollowUser;
+import models.User;
 import repositories.FollowCatsRepository;
 import repositories.FollowUsersRepository;
 
@@ -15,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 

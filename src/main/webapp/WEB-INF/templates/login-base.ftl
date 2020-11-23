@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Вход</title>
-    <link rel="stylesheet" href="/css/login/main.css">
-</head>
-<body>
 <div class="left-part">
     <h2>Войти</h2>
     <#if warnings??>
@@ -20,5 +12,3 @@
         <input type="submit" placeholder="Войти">
     </form>
 </div>
-</body>
-</html>

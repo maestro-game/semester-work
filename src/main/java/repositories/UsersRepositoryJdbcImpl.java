@@ -3,8 +3,6 @@ package repositories;
 import lombok.AllArgsConstructor;
 import models.User;
 
-import javax.sql.DataSource;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
