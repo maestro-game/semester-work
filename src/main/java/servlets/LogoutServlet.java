@@ -1,8 +1,8 @@
 package servlets;
 
+import managers.CookieManager;
 import managers.HtmlManager;
 import managers.Page;
-import managers.CookieManager;
 import managers.TemplateManager;
 import models.User;
 

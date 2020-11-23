@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Флудильня</title>
-</head>
-<body>
+<#include "base.ftl">
+<@html "messages" "Флудильня" css=false>
 <div>
     <#if messages??>
         <#list messages as message>
@@ -14,5 +9,4 @@
         </#list>
     </#if>
 </div>
-</body>
-</html>
+</@>

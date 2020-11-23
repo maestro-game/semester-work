@@ -1,6 +1,5 @@
 package repositories;
 
-import models.Category;
 import models.FollowUser;
 import models.User;
 

@@ -1,0 +1,137 @@
+body {
+    font-family: 'Calibri 24px', serif;
+    margin: 0;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+*:focus {
+    outline: none;
+}
+
+a, a:visited, a:hover {
+    color: initial;
+    text-decoration: none;
+}
+
+a:not(.menu) {
+    color: inherit;
+}
+
+.outer {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+
+    background: #f0fff0;
+}
+
+.inner {
+    width: 30%;
+    height: 20%;
+    padding: 10px;
+
+    font-size: larger;
+    color: white;
+}
+
+.left-up {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(to top left, #f0fff0 0%, #f0fff0 50%, #228b5e 50%, #228b5e 100%);
+}
+
+.logo {
+    display: flex;
+    align-items: flex-start;
+}
+
+.logo__img > img {
+    max-height: 75px;
+}
+
+.logo__name {
+    padding-left: 5px;
+}
+
+.left-bottom {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom left, #f0fff0 0%, #f0fff0 50%, #228b5e 50%, #228b5e 100%);
+}
+
+.menu {
+    position: absolute;
+    bottom: 10px;
+    left: 5px;
+    display: flex;
+    width: 200px;
+    flex-wrap: wrap-reverse;
+}
+
+.menu__entry-link {
+    padding: 10px;
+}
+
+.right-up {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: linear-gradient(to top right, #f0fff0 0%, #f0fff0 50%, #228b5e 50%, #228b5e 100%);
+}
+
+.search {
+    position: absolute;
+    right: 5px;
+}
+
+.search > form {
+    display: flex;
+}
+
+.search > form > * {
+    padding-right: 10px;
+}
+
+.search__img {
+    mix-blend-mode: screen;
+    max-height: 30px;
+    filter: invert(1);
+}
+
+.search__entry {
+    background: transparent;
+    border: 0;
+}
+
+.search__entry::placeholder {
+    color: white;
+}
+
+.right-bottom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom right, #f0fff0 0%, #f0fff0 50%, #228b5e 50%, #228b5e 100%);
+}
+
+.footer {
+    position: absolute;
+    bottom: 10px;
+    right: 5px;
+}
+
+.container {
+    position: absolute;
+    top: 12%;
+    left: 15%;
+    width: 82vw;
+    height: 72vh;
+    display: flex;
+    justify-content: space-between;
+}

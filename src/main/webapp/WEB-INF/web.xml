@@ -54,6 +54,10 @@
         <servlet-name>profileInfo</servlet-name>
         <servlet-class>servlets.ProfileInfoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FilesServlet</servlet-name>
+        <servlet-class>servlets.FilesServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>register</servlet-name>
@@ -104,6 +108,10 @@
     <servlet-mapping>
         <servlet-name>profileInfo</servlet-name>
         <url-pattern>/info</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FilesServlet</servlet-name>
+        <url-pattern>/files/*</url-pattern>
     </servlet-mapping>
 
     <listener>

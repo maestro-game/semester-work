@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-    <link rel="stylesheet" href="/css/register/main.css">
-</head>
-<body>
 <div>
-    <div class="left-part">
+    <div class="right-part">
         <h2>Зарегистрироватся</h2>
         <#if warnings??>
             <#list warnings as warning>
@@ -25,5 +17,3 @@
         </form>
     </div>
 </div>
-</body>
-</html>

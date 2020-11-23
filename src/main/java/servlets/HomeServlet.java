@@ -1,6 +1,8 @@
 package servlets;
 
-import managers.*;
+import managers.HtmlManager;
+import managers.Page;
+import managers.TemplateManager;
 import models.User;
 
 import javax.servlet.ServletConfig;

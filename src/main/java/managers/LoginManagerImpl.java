@@ -6,8 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import repositories.ImageRepository;
 import repositories.UsersRepository;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
