@@ -45,6 +45,7 @@ public class ProfileInfoServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User id = (User) request.getAttribute("user");
         if (id != null) {
+            System.out.println(request.getParameter("field") + " " + request.getParameter("data"));
             User user = (User) request.getAttribute("user");
             String field = request.getParameter("field");
             try {

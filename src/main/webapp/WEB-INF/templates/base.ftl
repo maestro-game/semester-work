@@ -25,86 +25,8 @@
     <#if css>
         <link rel="stylesheet" href="/files/css/${page}.css">
     </#if>
-    <#if user??>
-        <#if page == "post">
-            <script>
-                function showReplyForm(postId, commentUserAnswerToId, commentId) {
-                    let neededNode = document.querySelector('#comment' + commentId + '>.comment__replies');
-                    let previousInnerHTML = neededNode.innerHTML.valueOf();
-                    neededNode.innerHTML = `
-                       <div class="comment comment_reply">
-                            <div class="comment__header comment__header_reply">
-                                <img src="" alt="" class="comment__img comment__img_reply">
-                                <p class="comment__name comment__name_reply">
-                                  ${user.getName() + " " + user.getSurname()}
-                                </p>
-                            </div>
-                            <div class="comment__content comment__content_reply">
-                                <form action="/comment?answers=` + commentUserAnswerToId + `&post=` + postId + `" method="post" class="comments__form">
-                                    <input type="text" id="text" name="text" class="comment__text comment__text_reply" />
-                                    <input type="submit" value="Ответить">
-                                </form>
-                            </div>
-                        </div>` + previousInnerHTML;
-                }
-
-                async function commentHandler(event) {
-                    event.preventDefault();
-
-                    const form = event.currentTarget;
-                    const url = form.action;
-
-                    try {
-                        const formData = new FormData(form);
-                        const responseData = await postForm(url, formData);
-
-                        let neededNode = document.querySelector(".comment__replies");
-
-                        neededNode.innerHTML += `
-                        <div class="comments__entity">
-                            <div class="comment">
-                                <div class="comment__header">
-                                    <img src="" alt="" class="comment__img">
-                                    <p class="comment__name">` + responseData['author']['name'] + " " + responseData['author']['surname'] +
-                            `
-                                    </p>
-                                    <p class="comment__datetime">` + responseData['timestamp'] + `</p>
-                                </div>
-                                <div class="comment__content">
-                                    <p class="comment__text">` + responseData['text'] + `</p>
-                                    <div class="comment__default">
-                                        <p class="comment__edit">изменить</p>
-                                        <p class="comment__delete">удалить</p>
-                                        <p class="comment__send">отправить</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`
-
-                    } catch (err) {
-                        console.log(err);
-                    } finally {
-                        form.reset();
-                    }
-                }
-
-                async function postForm(url, formData) {
-                    const data = new URLSearchParams();
-                    for (const pair of formData) {
-                        data.append(pair[0], pair[1]);
-                    }
-                    const response = await fetch(url, {
-                        method: "post",
-                        body: data
-                    });
-                    return await response.json();
-                }
-
-                window.addEventListener("load", () => {
-                    document.querySelector(".comments__form").addEventListener("submit", commentHandler);
-                });
-            </script>
-        </#if>
+    <#if js>
+        <script src="/files/js/${page}.js"></script>
     </#if>
 </head>
 <body>
@@ -112,18 +34,16 @@
     <div class="left-up inner">
         <div class="logo">
             <div class="logo__img">
-                <img src="/images/logo.png" alt="logo">
+                <img src="/files/images/logo.png" alt="logo">
             </div>
             <div class="logo__name"><h4>Biogram</h4></div>
         </div>
     </div>
     <div class="left-bottom inner">
         <div class="menu">
-            <#--            TODO: посты             -->
             <a href="/" class="menu__entry-link">
                 <p class="menu__entry">посты</p>
             </a>
-            <#--            TODO: лента             -->
             <a href="/" class="menu__entry-link">
                 <p class="menu__entry">лента</p>
             </a>
