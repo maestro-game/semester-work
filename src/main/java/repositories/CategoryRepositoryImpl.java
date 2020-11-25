@@ -19,8 +19,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public List<Category> findChildCategories(Taxon taxon, Long id) {
-        long zero = taxon.getParent().getBitMask() & id;
-        return jdbcTemplate.listQuery(SQL_FIND_CHILD_CATEGORIES, categoryRowMapper, zero + taxon.getDistance(), zero + taxon.getBitMask(), taxon.getDistance());
+        return jdbcTemplate.listQuery(SQL_FIND_CHILD_CATEGORIES, categoryRowMapper, id + taxon.getDistance(), id + taxon.getBitMask(), taxon.getDistance());
     }
 
     @Override
