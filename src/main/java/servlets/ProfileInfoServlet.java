@@ -50,11 +50,19 @@ public class ProfileInfoServlet extends HttpServlet {
             try {
                 int status;
                 switch (field) {
+                    case "birth":
+                        String data = request.getParameter("data");
+                        if (!data.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
+                            status = 400;
+                            break;
+                        }
+                        usersRepository.updateField(user.getId(), field, data);
+                        status = 200;
+                        break;
                     case "name":
                     case "surname":
                     case "middleName":
                     case "about":
-                    case "birth":
                         usersRepository.updateField(user.getId(), field, request.getParameter("data"));
                         status = 200;
                         break;
