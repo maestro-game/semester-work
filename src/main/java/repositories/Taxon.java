@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Taxon {
     all(0, null),
-    domain  (0b11100000_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, all),
+    domain  (0b01100000_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, all),
     kingdom (0b00011100_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, domain),
     type    (0b00000011_11111000_00000000_00000000_00000000_00000000_00000000_00000000L, kingdom),
     clazz   (0b00000000_00000111_11110000_00000000_00000000_00000000_00000000_00000000L, type),
@@ -19,6 +19,7 @@ public enum Taxon {
     private final Taxon parent;
 
     Taxon(long bitMask, Taxon parent) {
+
         this.bitMask = bitMask;
         this.parent = parent;
         this.distance = (~bitMask + 1) & bitMask;
