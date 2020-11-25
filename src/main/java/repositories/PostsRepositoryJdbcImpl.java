@@ -17,7 +17,7 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
     //language=SQL
     private static final String SQL_SAVE = "INSERT INTO posts values (default, ?, ?, ?, ?, ?) returning id";
     //language=SQL
-    private static final String SQL_SELECT_PAGE_BY_CATEGORY = "SELECT * FROM posts WHERE specie > ? AND specie <= ? ORDER BY timestamp offset ? limit ?";
+    private static final String SQL_SELECT_PAGE_BY_CATEGORY = "SELECT * FROM posts WHERE specie >= ? AND specie < ? ORDER BY timestamp offset ? limit ?";
 
     private JdbcTemplate jdbcTemplate;
     UsersRepository usersRepository;
@@ -46,7 +46,7 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
 
     @Override
     public List<Post> findPageByCategory(Taxon taxon, Long id, int offset, int limit) {
-        return jdbcTemplate.listQuery(SQL_SELECT_PAGE_BY_CATEGORY, postWithAuthor, id, id + taxon.getBitMask(), offset, limit);
+        return jdbcTemplate.listQuery(SQL_SELECT_PAGE_BY_CATEGORY, postWithAuthor, id, id + taxon.getDistance(), offset, limit);
     }
 
     @Override
