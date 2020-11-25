@@ -1,10 +1,12 @@
 package models;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 @AllArgsConstructor
 public class CategoryDto {
     String name;
