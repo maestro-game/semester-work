@@ -1,1 +1,1 @@
-POST localhost:8080/comment?post=1&text=test
+POST localhost:8080/search?type=getCats&id=0&taxon=1

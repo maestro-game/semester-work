@@ -97,18 +97,22 @@
             desc.display = 'none';
         }
         hideDesc()">
-<#--            <img src="${post.getImage()}" alt="" class="img__post">-->
-            <img src="https://www.aljazeera.com/wp-content/uploads/2020/04/ecab8c7af42a439d9043b0ade6e1f05b_18.jpeg?fit=999%2C562" alt="" class="img__post">
+            <img src="/files/images/posts/${post.getId()}/${post.getImage()?split("/")?last}" alt="" class="img__post">
             <div class="img__description description">
                 <p class="description__text">${post.getDescription()}</p>
-                <p class="description__default">изменить удалить</p>
+                <div class="description__default">
+                    <p class="description__change">изменить</p>
+                    <p class="description__delete">удалить</p>
+                </div>
             </div>
         </div>
     </div>
     <div class="right-part info">
         <div class="stats">
             <div class="likes">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z"/>
+                </svg>
                 <p class="likes__count">${likes}</p>
             </div>
             <div class="replies">
