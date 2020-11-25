@@ -58,7 +58,7 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
 
     @Override
     public void updateField(String id, String field, String data) {
-        jdbcTemplate.executeQuery(SQL_UPDATE_FIELD, field, data, id);
+        jdbcTemplate.executeQuery(SQL_UPDATE_FIELD.replaceFirst("\\?", field), data, id);
     }
 
     @Override

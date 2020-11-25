@@ -45,7 +45,7 @@ public class SearchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> root = new HashMap<>();
         User user = (User) request.getAttribute("user");
-        templateManager.write(htmlManager.render(Page.search, user, request.getRequestURI().substring(6), root), request, response, root);
+        templateManager.write(htmlManager.render(Page.search, user, null, root), request, response, root);
     }
 
     @Override

@@ -75,6 +75,7 @@ public class ContextListener implements javax.servlet.ServletContextListener {
         servletContext.setAttribute("passwordEncoder", passwordEncoder);
         servletContext.setAttribute("likesRepository", likesRepository);
         servletContext.setAttribute("usersRepository", usersRepository);
+        servletContext.setAttribute("categoryRepository", categoryRepository);
     }
 
     @Override

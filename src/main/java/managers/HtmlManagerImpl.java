@@ -40,6 +40,10 @@ public class HtmlManagerImpl implements HtmlManager {
                 break;
             case profile:
             case profileInfo:
+                if (user == null) {
+                    page = Page.login;
+                    break;
+                }
                 if (param.equals(user.getId())) {
                     root.put("isOwner", true);
                     root.put("owner", user);
