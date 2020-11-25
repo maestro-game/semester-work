@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import managers.HtmlManager;
 import managers.Page;
 import managers.TemplateManager;
+import models.CategoryDto;
 import models.User;
 import repositories.CategoryRepository;
 import repositories.PostsRepository;
@@ -70,7 +71,7 @@ public class SearchServlet extends HttpServlet {
             case "getCats": {
                 Taxon taxon = Taxon.values()[Integer.parseInt(request.getParameter("taxon"))];
                 long id = Long.parseLong(request.getParameter("id"));
-                result = objectMapper.writeValueAsString(categoryRepository.findChildCategories(taxon, id));
+                result = objectMapper.writeValueAsString(CategoryDto.from(categoryRepository.findChildCategories(taxon, id)));
                 break;
             }
             default:

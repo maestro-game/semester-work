@@ -46,8 +46,7 @@ public class PostsRepositoryJdbcImpl implements PostsRepository {
 
     @Override
     public List<Post> findPageByCategory(Taxon taxon, Long id, int offset, int limit) {
-        long zero = taxon.getParent().getBitMask() & id;
-        return jdbcTemplate.listQuery(SQL_SELECT_PAGE_BY_CATEGORY, postRowMapper, zero, zero + taxon.getBitMask(), taxon.getDistance(), offset, limit);
+        return jdbcTemplate.listQuery(SQL_SELECT_PAGE_BY_CATEGORY, postRowMapper, id, id + taxon.getBitMask(), taxon.getDistance(), offset, limit);
     }
 
     @Override
