@@ -90,3 +90,7 @@
     margin-top: auto;
     display: flex;
 }
+
+.comments {
+    overflow: auto;
+}
