@@ -1,1 +1,1 @@
-POST localhost:8080/search?type=getCats&id=0&taxon=1
+PUT localhost:8080/post?text=123&id=1
