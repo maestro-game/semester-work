@@ -1,6 +1,7 @@
 package repositories;
 
 import models.Comment;
+import models.CommentDto;
 import models.User;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository {
     //language=SQL
     private static final String SQL_FIND_PAGE_BY_AUTHOR_ID = "SELECT * FROM comments WHERE author = ? offset ? limit ?";
     //language=SQL
-    private static final String SQL_FIND_BY_ID = "SELECT u.*, c.id commentId, c.timestamp, c.post, c.answers, c.text FROM comments c join users u on id = ? and u.id = c.author";
+    private static final String SQL_FIND_BY_ID = "SELECT u.*, c.id commentId, c.timestamp, c.post, c.answers, c.text FROM comments c join users u on c.id = ? and u.id = c.author";
     //language=SQL
     private static final String SQL_FIND_PAGE_BY_POST_ID = "SELECT u.*, c.id commentId, c.timestamp, c.post, c.answers, c.text FROM comments c join users u on post = ? and u.id = c.author offset ? limit ?";
     //language=SQL
@@ -43,7 +44,7 @@ public class CommentsRepositoryJdbcImpl implements CommentsRepository {
                 userRowMapper.mapRow(row),
                 row.getTimestamp("timestamp"),
                 null,
-                ansId != 0 ? Comment.builder().id(ansId).build() : null,
+                ansId != 0 ? new CommentDto(ansId) : null,
                 row.getString("text"));
     };
 

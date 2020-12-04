@@ -30,12 +30,12 @@ public class FollowCatsRepositoryJdbcImpl implements FollowCatsRepository{
 
     @Override
     public void save(FollowCat followCat) {
-        jdbcTemplate.executeQuery(SQL_SAVE, followCat.getUser(), followCat.getCategory());
+        jdbcTemplate.executeQuery(SQL_SAVE, followCat.getUser().getId(), followCat.getCategory().getId());
     }
 
     @Override
     public void deleteById(FollowCat followCat) {
-        jdbcTemplate.executeQuery(SQL_DELETE, followCat.getUser(), followCat.getCategory());
+        jdbcTemplate.executeQuery(SQL_DELETE, followCat.getUser().getId(), followCat.getCategory().getId());
     }
 
     @Override

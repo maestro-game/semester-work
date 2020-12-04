@@ -16,6 +16,6 @@ public class Comment {
     private User author;
     private Timestamp timestamp;
     private Post post;
-    private Comment answerTo;
+    private CommentDto answerTo;
     private String text;
 }

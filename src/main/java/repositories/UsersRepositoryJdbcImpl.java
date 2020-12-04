@@ -23,6 +23,22 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     private final RowMapper<User> userRowMapper = row -> {
         String id = row.getString(1);
         return new User(id,
+                null,
+                row.getString(3),
+                row.getString(4),
+                row.getString(5),
+                row.getString(6),
+                row.getDate(7),
+                row.getString(8),
+                imageRepository.pathForUser(id, row.getString(9)),
+                null,
+                null,
+                null);
+    };
+
+    private final RowMapper<User> userWithPassword = row -> {
+        String id = row.getString(1);
+        return new User(id,
                 row.getString(2),
                 row.getString(3),
                 row.getString(4),
@@ -59,6 +75,11 @@ public class UsersRepositoryJdbcImpl implements UsersRepository {
     @Override
     public void updateField(String id, String field, String data) {
         jdbcTemplate.executeQuery(SQL_UPDATE_FIELD.replaceFirst("\\?", field), data, id);
+    }
+
+    @Override
+    public Optional<User> findByIdWithPassword(String id) {
+        return jdbcTemplate.entityQuery(SQL_SELECT_USER_BY_ID, userWithPassword, id);
     }
 
     @Override

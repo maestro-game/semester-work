@@ -3,6 +3,7 @@ package servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import managers.HtmlManager;
 import models.Comment;
+import models.CommentDto;
 import models.Post;
 import models.User;
 import repositories.CommentsRepository;
@@ -42,7 +43,7 @@ public class CommentServlet extends HttpServlet {
                         user,
                         timestamp,
                         Post.builder().id(Long.valueOf(request.getParameter("post"))).build(),
-                        answers != null ? Comment.builder().id(Long.valueOf(answers)).build() : null,
+                        answers != null ? new CommentDto(Long.valueOf(answers)) : null,
                         request.getParameter("text"));
 
                 comment.setId(commentsRepository.saveReturningId(comment));

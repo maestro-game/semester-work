@@ -18,7 +18,7 @@ public class LoginManagerImpl implements LoginManager {
     //TODO validate by regex
     @Override
     public User login(String id, String password, List<String> warnings) {
-        Optional<User> candidate = usersRepository.findById(id);
+        Optional<User> candidate = usersRepository.findByIdWithPassword(id);
         if (candidate.isPresent() && passwordEncoder.matches(password, candidate.get().getPassword())) {
             User user = candidate.get();
             user.setImage(imageRepository.pathForUser(user.getId(), user.getImage()));;

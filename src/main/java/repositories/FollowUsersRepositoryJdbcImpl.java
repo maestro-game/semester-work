@@ -35,11 +35,11 @@ public class FollowUsersRepositoryJdbcImpl implements FollowUsersRepository{
 
     @Override
     public void save(FollowUser followUser) {
-        jdbcTemplate.executeQuery(SQL_SAVE, followUser.getUser(), followUser.getFollow());
+        jdbcTemplate.executeQuery(SQL_SAVE, followUser.getUser().getId(), followUser.getFollow().getId());
     }
 
     @Override
     public void deleteById(FollowUser followUser) {
-        jdbcTemplate.executeQuery(SQL_DELETE, followUser.getUser(), followUser.getFollow());
+        jdbcTemplate.executeQuery(SQL_DELETE, followUser.getUser().getId(), followUser.getFollow().getId());
     }
 }

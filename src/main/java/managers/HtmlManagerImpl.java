@@ -77,6 +77,7 @@ public class HtmlManagerImpl implements HtmlManager {
                     Integer pageNum = (Integer) root.get("page");
                     root.put("comments", commentsRepository.findPageByPostId(post.getId(), PAGE_SIZE * ((pageNum == null ? 1 : pageNum) - 1), PAGE_SIZE));
                     root.put("likes", likesRepository.countByPostId(postId));
+                    root.put("isLiked", user != null && likesRepository.isLiked(user.getId(), postId));
                 }
                 break;
         }

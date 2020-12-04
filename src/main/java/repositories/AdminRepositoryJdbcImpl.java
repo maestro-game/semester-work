@@ -28,12 +28,17 @@ public class AdminRepositoryJdbcImpl implements AdminRepository{
     }
 
     @Override
+    public Optional<User> findByIdWithPassword(String id) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public List<User> searchById(String id, int offset, int limit) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public RowMapper<User> getRowMapper() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
