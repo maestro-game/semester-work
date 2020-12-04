@@ -28,13 +28,13 @@ public class AuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        // TODO REMOVE \/\/\/\/\/
-        request.setAttribute("user", usersRepository.findById("test").get());
-        if (true) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        // TODO REMOVE /\/\/\/\/\
+//        // TODO REMOVE \/\/\/\/\/
+//        request.setAttribute("user", usersRepository.findById("test").get());
+//        if (true) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        // TODO REMOVE /\/\/\/\/\
 
         HttpSession session = request.getSession(false);
         if (session != null) {
