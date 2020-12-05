@@ -35,6 +35,7 @@ public class CommentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = (User) request.getAttribute("user");
+        System.out.println(request.getParameter("text"));
         if (user != null) {
             String answers = request.getParameter("answers");
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -64,6 +65,7 @@ public class CommentServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getAttribute("user");
+        System.out.println(request.getParameter("id"));
         if (user != null) {
             Long commentId = Long.valueOf(request.getParameter("id"));
             Optional<Comment> candidate;

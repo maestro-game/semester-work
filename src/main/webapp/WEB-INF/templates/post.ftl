@@ -36,17 +36,27 @@
 
             async function like() {
                 const data = new URLSearchParams();
-                data.append("id", '${post.getId()}');
-                await postFormData("/like", data, "put");
-                //    set like svg to filled
+                console.log(${post.getId()});
+                data.append("postId", '${post.getId()}');
+                let likesImg = document.querySelector(".likes__img");
+                let likesCount = document.querySelector(".likes__count");
+                if (likesImg.classList.contains("liked")) {
+                    likesImg.classList.remove("liked");
+                    likesCount.innerHTML = String(Number(likesCount.innerHTML) - 1);
+                    await postFormData("/like?postId=" + ${post.getId()}, data, "delete");
+                } else {
+                    likesImg.classList.add("liked");
+                    likesCount.innerHTML = String(Number(likesCount.innerHTML) + 1);
+                    await postFormData("/like", data, "post");
+                }
             }
 
             async function commentDelete(commentId) {
                 let neededNode = document.querySelector('#comment' + commentId);
                 const data = new URLSearchParams();
                 data.append("id", commentId);
-                await postFormData("/comment", data, "delete");
                 neededNode.innerHTML = "";
+                await postFormData("/comment?id=" + commentId, data, "delete");
             }
 
             function showCommentChangeForm(commentId) {
@@ -95,8 +105,11 @@
                 const url = form.action;
 
                 try {
-                    const formData = new FormData(form);
-                    const responseData = await sendForm(url, formData);
+                    // const formData = new FormData(form);
+                    // const responseData = await sendForm(url, formData);
+                    const data = new URLSearchParams(new FormData(form));
+                    console.log(document.querySelector(".textbox").value);
+                    const responseData = await postFormData(url, data, "post");
 
                     let neededNode = document.querySelector(".comment__replies");
 
@@ -137,9 +150,9 @@
 
                 try {
                     const data = new URLSearchParams(new FormData(form));
-                    data.append("answers", form.parentNode.parentNode.parentNode.parentNode.id.toString().substring(7).split("__").reverse().pop());
-                    data.append("post", ${post.getId()});
-                    const responseData = await postFormData(url, data);
+                    let answers = form.parentNode.parentNode.parentNode.parentNode.id.toString().substring(7).split("__").reverse().pop();
+                    let post = ${post.getId()};
+                    const responseData = await postFormData(url + "?answers=" + answers + "&post=" + post, data, "post");
 
                     let neededNode = form.parentNode;
 
@@ -162,12 +175,13 @@
 
                 try {
                     const data = new URLSearchParams(new FormData(form));
-                    data.append("id", form.parentNode.id.toString().substring(7).split("__").reverse().pop());
-                    const responseData = await postFormData(url, data, "put");
-
+                    let id = form.parentNode.id.toString().substring(7).split("__").reverse().pop();
+                    let text = document.querySelector("#text").value;
+                    // data.append("id", form.parentNode.id.toString().substring(7).split("__").reverse().pop());
                     let neededNode = form.parentNode;
+                    neededNode.innerHTML = `<p class="comment__text comment__text_reply">` + text + `</p>`
+                    const responseData = await postFormData(url + "?text=" + text + "&id=" + id, data, "put");
 
-                    neededNode.innerHTML = `<p class="comment__text comment__text_reply">` + responseData["text"] + `</p>`
 
                 } catch (err) {
                     console.log(err);
@@ -185,8 +199,10 @@
             async function sendForm(url, formData, method = "post") {
                 const data = new URLSearchParams();
                 for (const pair of formData) {
+                    console.log(pair);
                     data.append(pair[0], pair[1]);
                 }
+                console.log(data.get("text"));
                 return await postFormData(url, formData, method);
             }
 
@@ -230,9 +246,17 @@
     <div class="right-part info">
         <div class="stats">
             <div class="likes">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z"/>
-                </svg>
+                <#if isLiked>
+                    <svg class="likes__img liked" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24">
+                        <path d="M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z"/>
+                    </svg>
+                <#else>
+                    <svg class="likes__img" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24">
+                        <path d="M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z"/>
+                    </svg>
+                </#if>
                 <p class="likes__count" onclick="like()">${likes}</p>
             </div>
             <div class="replies">
@@ -245,7 +269,7 @@
         <div class="comments">
             <div class="comments__add">
                 <form action="/comment?post=${post.getId()}" method="post" class="comments__form">
-                    <input type="text" name="text" placeholder="Введите комментарий"/>
+                    <input class="textbox" type="text" name="text" placeholder="Введите комментарий"/>
                     <input type="submit" value="Добавить"/>
                 </form>
             </div>

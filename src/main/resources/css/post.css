@@ -94,3 +94,8 @@
 .comments {
     overflow: auto;
 }
+
+.likes__img.liked {
+    fill: red;
+}
+
