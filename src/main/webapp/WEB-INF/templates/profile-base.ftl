@@ -24,6 +24,14 @@
             </#if>
         </div>
     </div>
+    <div class="add__post">
+        <form action="/post" method="post" class="post__form" enctype="multipart/form-data">
+            <input type="text" name="specie">
+            <input type="text" name="description">
+            <input type="file" name="image">
+            <input type="submit" value="Загрузить пост">
+        </form>
+    </div>
     <#--    <div class="owner__categories">-->
     <#--        <#if !owner.followCats?? || owner.followCats?size == 0>-->
     <#--            <p class="owner__cat">-->
