@@ -9,7 +9,7 @@
     <div class="owner__bio">
         <div class="owner__birth_container owner__bio-container">
             <#if owner.birth??>
-                <p class="owner__birth" id="birth">${owner.getBirth()}</p>
+                <p class="owner__birth owner__empty" id="birth">${owner.getBirth()}</p>
             <#else>
                 <p class="owner__birth owner__empty" id="birth">Нажмите, чтобы добавить дату рождения формат
                     yyyy-dd-mm</p>
@@ -17,7 +17,7 @@
         </div>
         <div class="owner__about-container owner__bio-container">
             <#if owner.about??>
-                <p class="owner__about" id="about">${owner.getAbout()}</p>
+                <p class="owner__about owner__empty" id="about">${owner.getAbout()}</p>
             <#else>
                 <p class="owner__about owner__empty" id="about">Нажмите, чтобы добавить информацию о себе! (до 2000
                     символов)</p>
