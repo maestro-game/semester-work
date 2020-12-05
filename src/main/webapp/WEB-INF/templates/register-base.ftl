@@ -12,7 +12,6 @@
             <input type="text" name="name" placeholder="Имя" <#if (name)??>value="${name}"</#if>>
             <input type="text" name="surname" placeholder="Фамилия" <#if (surname)??>value="${surname}"</#if>>
             <input type="email" name="email" placeholder="Email" <#if (email)??>value="${email}"</#if>>
-            <input type="date" name="birth" placeholder="Дата рождения" <#if (birth)??>value="${birth}"</#if>>
             <input type="submit" placeholder="Регистрация">
         </form>
     </div>

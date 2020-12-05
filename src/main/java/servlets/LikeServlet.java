@@ -26,6 +26,7 @@ public class LikeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getAttribute("user");
+        System.out.println(request.getParameter("postId"));
         if (user != null) {
             try {
                 likesRepository.save(new Like(user, Post.builder().id(Long.valueOf(request.getParameter("postId"))).build()));
@@ -45,6 +46,7 @@ public class LikeServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getAttribute("user");
+        System.out.println(request.getParameter("postId"));
         if (user != null) {
             try {
                 likesRepository.deleteById(new Like(user, Post.builder().id(Long.valueOf(request.getParameter("postId"))).build()));

@@ -5,12 +5,12 @@ window.addEventListener("load", () => {
         let savedNode = e.currentTarget;
 
         async function changeProfile(field, text) {
-            const data = new URLSearchParams();
-            data.append("field", field);
-            data.append("data", text);
-            await fetch("/info", {
+            // const data = new URLSearchParams();
+            // data.append("field", field);
+            // data.append("data", text);
+            await fetch(`/info?field=${field}&data=${text}`, {
                 method: "put",
-                body: data
+                // body: data
             });
         }
 
@@ -25,8 +25,9 @@ window.addEventListener("load", () => {
             const text = ev.currentTarget.value;
             let parent = ev.currentTarget.parentNode;
             try {
+                savedNode.innerHTML = text;
                 await changeProfile(field, text);
-                savedNode.value = text;
+
             } catch (err) {
                 console.error(err);
             } finally {
